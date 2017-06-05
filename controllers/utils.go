@@ -13,6 +13,23 @@ const (
 	FlashSeparator = ";"
 )
 
+type ApiResult struct {
+	Result  interface{} `json:"result"`
+	Success bool        `json:"success"`
+	Error   ApiError    `json:"error"`
+}
+
+type ApiError struct {
+	Code    int         `json:"code,omitempty"`
+	Details interface{} `json:"details,omitempty"`
+	Message string      `json:"message,omitempty"`
+}
+
+type ArrayResult struct {
+	Items      interface{} `json:"items"`
+	TotalCount int64       `json:"totalCount"`
+}
+
 func setFlashMessage(c echo.Context, m map[string]string) {
 	var flashValue string
 	for key, value := range m {
