@@ -13,6 +13,7 @@ Run
 
 ```
 $ cd offer
+$ go test offer/controllers
 $ go run main.go
 ```
 
