@@ -13,6 +13,7 @@ Run
 
 ```
 $ cd offer
+$ go test offer/controllers
 $ go run main.go
 ```
 
@@ -38,4 +39,4 @@ $ go get github.com/asaskevich/govalidator
 - orm tool: [xorm](http://xorm.io/)
 - configuration tool: [viper](https://github.com/spf13/viper)
 - validator: [govalidator](github.com/asaskevich/govalidator)
-- utils: github.com/pangpanglabs/utils
+- utils: [github.com/pangpanglabs/utils](github.com/pangpanglabs/utils)
