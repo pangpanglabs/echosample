@@ -1,6 +1,9 @@
-package models
+package controllers
 
-import "time"
+import (
+	"offer/models"
+	"time"
+)
 
 type DiscountInput struct {
 	Name           string  `json:"name" valid:"required"`
@@ -12,7 +15,7 @@ type DiscountInput struct {
 	Enable         bool    `json:"enable"`
 }
 
-func (d *DiscountInput) ToModel() (*Discount, error) {
+func (d *DiscountInput) ToModel() (*models.Discount, error) {
 	startAt, err := time.Parse("2006-01-02", d.StartAt)
 	if err != nil {
 		return nil, err
@@ -21,7 +24,7 @@ func (d *DiscountInput) ToModel() (*Discount, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Discount{
+	return &models.Discount{
 		Name:           d.Name,
 		Desc:           d.Desc,
 		StartAt:        startAt,
