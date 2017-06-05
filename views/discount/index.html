@@ -35,6 +35,26 @@
   </tbody>
 </table>
 
+{{$totalPageSize := add 1 (divide .MaxResultCount .TotalCount)}}
+{{$maxResultCount := .MaxResultCount}}
+<nav aria-label="Page navigation">
+  <ul class="pagination">
+    <li>
+      <a href="/discounts?maxResultCount={{$maxResultCount}}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {{ range $i := loop $totalPageSize}}
+      <li><a href="/discounts?maxResultCount={{$maxResultCount}}&skipCount={{multiply $maxResultCount $i}}">{{add $i 1}}</a></li>
+    {{ end }}
+    <li>
+      <a href="/discounts?maxResultCount={{$maxResultCount}}&skipCount={{multiply $maxResultCount (subtract 1 $totalPageSize)}}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
 {{with .flash.error}} error: {{.}} {{end}}
 {{with .flash.warning}} warning: {{.}} {{end}}
 {{with .flash.notice}} notice: {{.}} {{end}}

@@ -22,13 +22,21 @@ func (c DiscountController) Init(g *echo.Group) {
 }
 
 func (DiscountController) GetAll(c echo.Context) error {
-	totalCount, items, err := c.Get("DB").(*models.DB).GetAllDiscount(nil, nil, nil, 0, 30)
+	var v SearchInput
+	if err := c.Bind(&v); err != nil {
+
+	}
+	if v.MaxResultCount == 0 {
+		v.MaxResultCount = DefaultMaxResultCount
+	}
+	totalCount, items, err := c.Get("DB").(*models.DB).GetAllDiscount(nil, nil, nil, v.SkipCount, v.MaxResultCount)
 	if err != nil {
 		return err
 	}
 	return c.Render(http.StatusOK, "discount/index", map[string]interface{}{
-		"TotalCount": totalCount,
-		"Discounts":  items,
+		"TotalCount":     totalCount,
+		"Discounts":      items,
+		"MaxResultCount": v.MaxResultCount,
 	})
 }
 func (DiscountController) New(c echo.Context) error {

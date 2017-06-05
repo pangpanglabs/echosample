@@ -5,6 +5,14 @@ import (
 	"time"
 )
 
+const (
+	DefaultMaxResultCount = 30
+)
+
+type SearchInput struct {
+	SkipCount      int `query:"skipCount"`
+	MaxResultCount int `query:"maxResultCount"`
+}
 type DiscountInput struct {
 	Name           string  `json:"name" valid:"required"`
 	Desc           string  `json:"desc"`
