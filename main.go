@@ -40,7 +40,7 @@ func main() {
 
 	controllers.HomeController{}.Init(e.Group("/"))
 	controllers.DiscountController{}.Init(e.Group("/discounts"))
-	controllers.DiscountController{}.Init(e.Group("/api/discounts"))
+	controllers.DiscountApiController{}.Init(e.Group("/api/discounts"))
 
 	e.Static("/static", "static")
 	e.Pre(middleware.RemoveTrailingSlash())
