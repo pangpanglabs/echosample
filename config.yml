@@ -1,0 +1,5 @@
+database:
+  driver: sqlite3
+  connection: pos.db
+  showSQL: true
+debug: true

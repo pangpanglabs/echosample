@@ -1,0 +1,21 @@
+{{define "discount/show"}}
+{{template "header"}}
+{{with .Discount}}
+<dl class="dl-horizontal">
+  <dt>Id</dt><dd>{{.Id}}</dd>
+  <dt>Name</dt><dd>{{.Name}}</dd>
+  <dt>Desc</dt><dd>{{.Desc}}</dd>
+  <dt>StartAt</dt><dd>{{.StartAt.Format "2006-01-02"}}</dd>
+  <dt>EndAt</dt><dd>{{.EndAt.Format "2006-01-02"}}</dd>
+  <dt>ActionType</dt><dd>{{.ActionType}}</dd>
+  <dt>DiscountAmount</dt><dd>{{.DiscountAmount}}</dd>
+  <dt>Enable</dt><dd>{{.Enable}}</dd>
+  <dt>CreatedAt</dt><dd>{{.CreatedAt}}</dd>
+  <dt>EndAt</dt><dd>{{.EndAt}}</dd>
+</dl>
+<p>
+  <a href="/discounts/{{.Id}}/edit">Edit</a> | <a href="/discounts">Back</a>
+</p>
+{{end}}
+{{template "footer"}}
+{{end}}

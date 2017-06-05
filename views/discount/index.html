@@ -1,0 +1,42 @@
+{{define "discount/index"}}
+{{template "header"}}
+<p>
+  <a class="btn btn-primary" href="/discounts/new" role="button">New Discount</a>
+</p>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Id</th>      
+      <th>Name</th>
+      <th>StartAt</th>
+      <th>EndAt</th>
+      <th>ActionType</th>
+      <th>DiscountAmount</th>
+      <th>Enable</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{range .Discounts}}
+    <tr>
+      <td>{{.Id}}</td>
+      <td>{{.Name}}</td>
+      <td>{{.StartAt.Format "2006-01-02"}}</td>
+      <td>{{.EndAt.Format "2006-01-02"}}</td>
+      <td>{{.ActionType}}</td>
+      <td>{{.DiscountAmount}}</td>
+      <td>{{.Enable}}</td>
+      <td>
+        <a href="/discounts/{{.Id}}">[Show]</a>
+        <a href="/discounts/{{.Id}}/edit">[Edit]</a>
+      </td>
+    </tr>
+    {{end}}
+  </tbody>
+</table>
+
+{{with .flash.error}} error: {{.}} {{end}}
+{{with .flash.warning}} warning: {{.}} {{end}}
+{{with .flash.notice}} notice: {{.}} {{end}}
+{{template "footer"}}
+{{end}}
