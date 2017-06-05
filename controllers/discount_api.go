@@ -18,7 +18,13 @@ func (c DiscountApiController) Init(g *echo.Group) {
 	g.PUT("/:id", c.Update)
 }
 func (DiscountApiController) GetAll(c echo.Context) error {
-	totalCount, items, err := c.Get("DB").(*models.DB).GetAllDiscount(nil, nil, nil, 0, 30)
+	var v SearchInput
+	if err := c.Bind(&v); err != nil {
+		return c.JSON(http.StatusBadRequest, ApiResult{
+			Error: ApiError{Message: err.Error()},
+		})
+	}
+	totalCount, items, err := c.Get("DB").(*models.DB).GetAllDiscount(nil, nil, nil, v.SkipCount, v.MaxResultCount)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, ApiResult{
 			Error: ApiError{Message: err.Error()},
