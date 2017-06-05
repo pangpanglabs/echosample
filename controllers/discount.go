@@ -24,7 +24,7 @@ func (c DiscountController) Init(g *echo.Group) {
 func (DiscountController) GetAll(c echo.Context) error {
 	var v SearchInput
 	if err := c.Bind(&v); err != nil {
-
+		setFlashMessage(c, map[string]string{"warning": err.Error()})
 	}
 	if v.MaxResultCount == 0 {
 		v.MaxResultCount = DefaultMaxResultCount
