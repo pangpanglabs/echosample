@@ -34,7 +34,7 @@ func (DiscountApiController) GetAll(c echo.Context) error {
 }
 
 func (DiscountApiController) Create(c echo.Context) error {
-	var v models.DiscountInput
+	var v DiscountInput
 	if err := c.Bind(&v); err != nil {
 		return c.JSON(http.StatusBadRequest, ApiResult{
 			Error: ApiError{Message: err.Error()},
@@ -85,7 +85,7 @@ func (DiscountApiController) GetOne(c echo.Context) error {
 }
 
 func (DiscountApiController) Update(c echo.Context) error {
-	var v models.DiscountInput
+	var v DiscountInput
 	if err := c.Bind(&v); err != nil {
 		return c.JSON(http.StatusBadRequest, ApiResult{
 			Error: ApiError{Message: err.Error()},

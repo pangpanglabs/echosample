@@ -38,7 +38,7 @@ func (DiscountController) New(c echo.Context) error {
 	})
 }
 func (DiscountController) Create(c echo.Context) error {
-	var v models.DiscountInput
+	var v DiscountInput
 	if err := c.Bind(&v); err != nil {
 		setFlashMessage(c, map[string]string{"error": err.Error()})
 		return c.Redirect(http.StatusFound, "/discount/new")
@@ -90,7 +90,7 @@ func (DiscountController) Edit(c echo.Context) error {
 	})
 }
 func (DiscountController) Update(c echo.Context) error {
-	var v models.DiscountInput
+	var v DiscountInput
 	if err := c.Bind(&v); err != nil {
 		setFlashMessage(c, map[string]string{"error": err.Error()})
 		return c.Redirect(http.StatusFound, "/discount/new")
