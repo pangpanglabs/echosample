@@ -23,6 +23,7 @@ func main() {
 	var c struct {
 		Database struct{ Driver, Connection string }
 		Debug    bool
+		Httpport string
 	}
 	if err := config.Read(*appEnv, &c); err != nil {
 		panic(err)
@@ -52,5 +53,5 @@ func main() {
 	e.Validator = &filters.Validator{}
 	e.Debug = c.Debug
 
-	e.Start(":8080")
+	e.Start(":" + c.Httpport)
 }
