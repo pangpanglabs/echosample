@@ -3,13 +3,13 @@ package models
 import "time"
 
 type DiscountInput struct {
-	Name           string `valid:"required"`
-	Desc           string
-	StartAt        string  `valid:"required"`
-	EndAt          string  `valid:"required"`
-	ActionType     string  `valid:"required"`
-	DiscountAmount float64 `valid:"required"`
-	Enable         bool
+	Name           string  `json:"name" valid:"required"`
+	Desc           string  `json:"desc"`
+	StartAt        string  `json:"startAt" valid:"required"`
+	EndAt          string  `json:"endAt" valid:"required"`
+	ActionType     string  `json:"actionType" valid:"required"`
+	DiscountAmount float64 `json:"discountAmount" valid:"required"`
+	Enable         bool    `json:"enable"`
 }
 
 func (d *DiscountInput) ToModel() (*Discount, error) {
