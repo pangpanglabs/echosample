@@ -35,7 +35,9 @@ func SetDbContext(db *xorm.Engine) echo.MiddlewareFunc {
 					return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 				}
 			default:
-				next(c)
+				if err := next(c); err != nil {
+					return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+				}
 			}
 
 			return nil
