@@ -31,12 +31,14 @@ $ go get github.com/pangpanglabs/goutils...
 $ go get github.com/mattn/go-sqlite3
 $ go get github.com/go-sql-driver/mysql
 $ go get github.com/asaskevich/govalidator
+$ go get github.com/sirupsen/logrus
 ```
 
 ## References
 
 - web framework: [echo framework](https://echo.labstack.com/)
 - orm tool: [xorm](http://xorm.io/)
+- logger : [logrus](github.com/sirupsen/logrus)
 - configuration tool: [viper](https://github.com/spf13/viper)
 - validator: [govalidator](github.com/asaskevich/govalidator)
 - utils: https://github.com/pangpanglabs/goutils
