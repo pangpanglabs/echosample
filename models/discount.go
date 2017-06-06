@@ -64,7 +64,7 @@ func (Discount) GetAll(ctx context.Context, sortby, order []string, offset, limi
 			}
 		} else {
 			if len(order) != 0 {
-				factory.Logger(ctx).Error("unused 'order' fields")
+				factory.Logger(ctx).Warn("unused 'order' fields")
 			}
 		}
 		return q
