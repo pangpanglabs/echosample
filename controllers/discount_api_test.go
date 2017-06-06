@@ -113,7 +113,6 @@ func Test_DiscountApiController_GetAll_SortByAsc(t *testing.T) {
 	rec := httptest.NewRecorder()
 	c := echoApp.NewContext(req, rec)
 	test.Ok(t, handleWithFilter(DiscountApiController{}.GetAll, c))
-	// fmt.Println(rec.Body.String())
 	test.Equals(t, http.StatusOK, rec.Code)
 
 	var v struct {
