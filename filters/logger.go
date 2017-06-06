@@ -40,8 +40,7 @@ func SetLogger(env string) echo.MiddlewareFunc {
 			req := c.Request()
 			c.SetRequest(req.WithContext(context.WithValue(req.Context(), "logger", logEntry)))
 
-			next(c)
-			return nil
+			return next(c)
 		}
 	}
 }
