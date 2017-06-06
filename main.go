@@ -46,6 +46,7 @@ func main() {
 
 	e.Static("/static", "static")
 	e.Pre(middleware.RemoveTrailingSlash())
+	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
 	e.Use(middleware.Logger())
 	e.Use(middleware.RequestID())
