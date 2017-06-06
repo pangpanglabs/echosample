@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"offer/factory"
+	"offer/models"
 	"strconv"
 
 	"github.com/labstack/echo"
@@ -25,6 +26,9 @@ func (DiscountApiController) GetAll(c echo.Context) error {
 			Error: ApiError{Message: err.Error()},
 		})
 	}
+	if v.MaxResultCount == 0 {
+		v.MaxResultCount = DefaultMaxResultCount
+	}
 
 	factory.Logger(c.Request().Context()).WithFields(logrus.Fields{
 		"sortby":         v.Sortby,
@@ -33,7 +37,7 @@ func (DiscountApiController) GetAll(c echo.Context) error {
 		"skipCount":      v.SkipCount,
 	}).Info("SearchInput")
 
-	totalCount, items, err := factory.DB(c.Request().Context()).GetAllDiscount(nil, v.Sortby, v.Order, v.SkipCount, v.MaxResultCount)
+	totalCount, items, err := models.Discount{}.GetAll(c.Request().Context(), v.Sortby, v.Order, v.SkipCount, v.MaxResultCount)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, ApiResult{
 			Error: ApiError{Message: err.Error()},
@@ -66,7 +70,7 @@ func (DiscountApiController) Create(c echo.Context) error {
 			Error: ApiError{Message: err.Error()},
 		})
 	}
-	if _, err := factory.DB(c.Request().Context()).AddDiscount(discount); err != nil {
+	if _, err := discount.Create(c.Request().Context()); err != nil {
 		return c.JSON(http.StatusInternalServerError, ApiResult{
 			Error: ApiError{Message: err.Error()},
 		})
@@ -84,7 +88,7 @@ func (DiscountApiController) GetOne(c echo.Context) error {
 			Error: ApiError{Message: err.Error()},
 		})
 	}
-	v, err := factory.DB(c.Request().Context()).GetDiscountById(id)
+	v, err := models.Discount{}.GetById(c.Request().Context(), id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, ApiResult{
 			Error: ApiError{Message: err.Error()},
@@ -125,7 +129,7 @@ func (DiscountApiController) Update(c echo.Context) error {
 		})
 	}
 	discount.Id = id
-	if err := factory.DB(c.Request().Context()).UpdateDiscountById(discount); err != nil {
+	if err := discount.Update(c.Request().Context()); err != nil {
 		return c.JSON(http.StatusInternalServerError, ApiResult{
 			Error: ApiError{Message: err.Error()},
 		})

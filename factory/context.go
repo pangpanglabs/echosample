@@ -2,17 +2,17 @@ package factory
 
 import (
 	"context"
-	"offer/models"
 
+	"github.com/go-xorm/xorm"
 	"github.com/sirupsen/logrus"
 )
 
-func DB(ctx context.Context) *models.DB {
+func DB(ctx context.Context) *xorm.Session {
 	v := ctx.Value("DB")
 	if v == nil {
 		panic("DB is not exist")
 	}
-	if db, ok := v.(*models.DB); ok {
+	if db, ok := v.(*xorm.Session); ok {
 		return db
 	}
 	panic("DB is not exist")

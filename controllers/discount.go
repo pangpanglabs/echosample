@@ -3,10 +3,12 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"offer/factory"
 	"offer/models"
 	"strconv"
 
 	"github.com/labstack/echo"
+	"github.com/sirupsen/logrus"
 )
 
 type DiscountController struct {
@@ -29,7 +31,15 @@ func (DiscountController) GetAll(c echo.Context) error {
 	if v.MaxResultCount == 0 {
 		v.MaxResultCount = DefaultMaxResultCount
 	}
-	totalCount, items, err := c.Get("DB").(*models.DB).GetAllDiscount(nil, nil, nil, v.SkipCount, v.MaxResultCount)
+
+	factory.Logger(c.Request().Context()).WithFields(logrus.Fields{
+		"sortby":         v.Sortby,
+		"order":          v.Order,
+		"maxResultCount": v.MaxResultCount,
+		"skipCount":      v.SkipCount,
+	}).Info("SearchInput")
+
+	totalCount, items, err := models.Discount{}.GetAll(c.Request().Context(), v.Sortby, v.Order, v.SkipCount, v.MaxResultCount)
 	if err != nil {
 		return err
 	}
@@ -60,7 +70,7 @@ func (DiscountController) Create(c echo.Context) error {
 		setFlashMessage(c, map[string]string{"error": err.Error()})
 		return c.Redirect(http.StatusFound, "/discounts/new")
 	}
-	if _, err := c.Get("DB").(*models.DB).AddDiscount(discount); err != nil {
+	if _, err := discount.Create(c.Request().Context()); err != nil {
 		return err
 	}
 	return c.Redirect(http.StatusFound, fmt.Sprintf("/discounts/%d", discount.Id))
@@ -70,7 +80,7 @@ func (DiscountController) GetOne(c echo.Context) error {
 	if err != nil {
 		return c.Render(http.StatusNotFound, "404", nil)
 	}
-	v, err := c.Get("DB").(*models.DB).GetDiscountById(id)
+	v, err := models.Discount{}.GetById(c.Request().Context(), id)
 	if err != nil {
 		return err
 	}
@@ -85,7 +95,7 @@ func (DiscountController) Edit(c echo.Context) error {
 	if err != nil {
 		return c.Render(http.StatusNotFound, "404", nil)
 	}
-	v, err := c.Get("DB").(*models.DB).GetDiscountById(id)
+	v, err := models.Discount{}.GetById(c.Request().Context(), id)
 	if err != nil {
 		return err
 	}
@@ -118,7 +128,7 @@ func (DiscountController) Update(c echo.Context) error {
 		return c.Render(http.StatusNotFound, "404", nil)
 	}
 	discount.Id = id
-	if err := c.Get("DB").(*models.DB).UpdateDiscountById(discount); err != nil {
+	if err := discount.Update(c.Request().Context()); err != nil {
 		return err
 	}
 	return c.Redirect(http.StatusFound, fmt.Sprintf("/discounts/%d", discount.Id))

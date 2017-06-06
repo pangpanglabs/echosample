@@ -1,6 +1,8 @@
 package models
 
 import (
+	"context"
+	"offer/factory"
 	"time"
 
 	"github.com/go-xorm/xorm"
@@ -19,23 +21,21 @@ type Discount struct {
 	UpdatedAt      time.Time `json:"updatedAt" xorm:"updated"`
 }
 
-func (db *DB) AddDiscount(m *Discount) (int64, error) {
-	return db.Insert(m)
+func (d *Discount) Create(ctx context.Context) (int64, error) {
+	return factory.DB(ctx).Insert(d)
 }
-
-func (db *DB) GetDiscountById(id int64) (*Discount, error) {
+func (Discount) GetById(ctx context.Context, id int64) (*Discount, error) {
 	var v Discount
-	if has, err := db.ID(id).Get(&v); err != nil {
+	if has, err := factory.DB(ctx).ID(id).Get(&v); err != nil {
 		return nil, err
 	} else if !has {
 		return nil, nil
 	}
 	return &v, nil
 }
-
-func (db *DB) GetAllDiscount(query map[string]string, sortby, order []string, offset, limit int) (totalCount int64, items []Discount, err error) {
+func (Discount) GetAll(ctx context.Context, sortby, order []string, offset, limit int) (totalCount int64, items []Discount, err error) {
 	queryBuilder := func() *xorm.Session {
-		q := db.Table("discount")
+		q := factory.DB(ctx).Table("discount")
 		if len(sortby) != 0 {
 			if len(sortby) == len(order) {
 				// 1) for each sort field, there is an associated order
@@ -45,7 +45,7 @@ func (db *DB) GetAllDiscount(query map[string]string, sortby, order []string, of
 					} else if order[i] == "asc" {
 						q.Asc(v)
 					} else {
-						// return nil, errors.New("Error: Invalid order. Must be either [asc|desc]")
+						factory.Logger(ctx).Error("Invalid order. Must be either [asc|desc]")
 					}
 				}
 			} else if len(sortby) != len(order) && len(order) == 1 {
@@ -56,15 +56,15 @@ func (db *DB) GetAllDiscount(query map[string]string, sortby, order []string, of
 					} else if order[0] == "asc" {
 						q.Asc(v)
 					} else {
-						// return nil, errors.New("Error: Invalid order. Must be either [asc|desc]")
+						factory.Logger(ctx).Error("Invalid order. Must be either [asc|desc]")
 					}
 				}
 			} else if len(sortby) != len(order) && len(order) != 1 {
-				// return nil, errors.New("Error: 'sortby', 'order' sizes mismatch or 'order' size is not 1")
+				factory.Logger(ctx).Error("'sortby', 'order' sizes mismatch or 'order' size is not 1")
 			}
 		} else {
 			if len(order) != 0 {
-				// return nil, errors.New("Error: unused 'order' fields")
+				factory.Logger(ctx).Error("unused 'order' fields")
 			}
 		}
 		return q
@@ -98,13 +98,12 @@ func (db *DB) GetAllDiscount(query map[string]string, sortby, order []string, of
 	}
 	return
 }
-
-func (db *DB) UpdateDiscountById(m *Discount) (err error) {
-	_, err = db.ID(m.Id).Update(m)
+func (d *Discount) Update(ctx context.Context) (err error) {
+	_, err = factory.DB(ctx).ID(d.Id).Update(d)
 	return
 }
 
-func (db *DB) DeleteDiscount(id int64) (err error) {
-	_, err = db.ID(id).Delete(&Discount{})
+func (Discount) Delete(ctx context.Context, id int64) (err error) {
+	_, err = factory.DB(ctx).ID(id).Delete(&Discount{})
 	return
 }
