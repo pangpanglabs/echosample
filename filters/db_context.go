@@ -1,6 +1,8 @@
 package filters
 
 import (
+	"context"
+	"log"
 	"net/http"
 	"offer/models"
 
@@ -14,19 +16,29 @@ func SetDbContext(db *xorm.Engine) echo.MiddlewareFunc {
 			session := db.NewSession()
 			defer session.Close()
 
-			c.Set("DB", &models.DB{session})
+			req := c.Request()
+			c.SetRequest(req.WithContext(context.WithValue(req.Context(), "DB", &models.DB{session})))
 
-			if err := next(c); err != nil {
-				session.Rollback()
-				return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+			switch req.Method {
+			case "POST", "PUT", "DELETE":
+				if err := session.Begin(); err != nil {
+					log.Println(err)
+				}
+				if err := next(c); err != nil {
+					session.Rollback()
+					return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+				}
+				if c.Response().Status >= 500 {
+					session.Rollback()
+					return nil
+				}
+				if err := session.Commit(); err != nil {
+					return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+				}
+			default:
+				next(c)
 			}
-			if c.Response().Status >= 500 {
-				session.Rollback()
-				return nil
-			}
-			if err := session.Commit(); err != nil {
-				return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-			}
+
 			return nil
 		}
 	}

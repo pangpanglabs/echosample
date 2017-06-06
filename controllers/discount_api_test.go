@@ -33,7 +33,7 @@ func init() {
 	echoApp.Validator = &filters.Validator{}
 
 	handleWithFilter = func(handlerFunc echo.HandlerFunc, c echo.Context) error {
-		return filters.SetDbContext(xormEngine)(handlerFunc)(c)
+		return filters.SetLogger("test")(filters.SetDbContext(xormEngine)(handlerFunc))(c)
 	}
 }
 
