@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo"
+	"github.com/sirupsen/logrus"
 )
 
 type DiscountApiController struct {
@@ -24,6 +25,14 @@ func (DiscountApiController) GetAll(c echo.Context) error {
 			Error: ApiError{Message: err.Error()},
 		})
 	}
+
+	c.Request().Context().Value("logger").(*logrus.Entry).WithFields(logrus.Fields{
+		"sortby":         v.Sortby,
+		"order":          v.Order,
+		"maxResultCount": v.MaxResultCount,
+		"skipCount":      v.SkipCount,
+	}).Info("SearchInput")
+
 	totalCount, items, err := c.Get("DB").(*models.DB).GetAllDiscount(nil, v.Sortby, v.Order, v.SkipCount, v.MaxResultCount)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, ApiResult{

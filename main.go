@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"log"
 	"offer/controllers"
 	"offer/filters"
 	"offer/models"
@@ -47,11 +48,16 @@ func main() {
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.CORS())
 	e.Use(middleware.Logger())
+	e.Use(middleware.RequestID())
 	e.Use(filters.SetDbContext(xormEngine))
+	e.Use(filters.SetLogger(*appEnv))
 
 	e.Renderer = filters.NewTemplate()
 	e.Validator = &filters.Validator{}
 	e.Debug = c.Debug
 
-	e.Start(":" + c.Httpport)
+	if err := e.Start(":" + c.Httpport); err != nil {
+		log.Println(err)
+	}
+
 }
