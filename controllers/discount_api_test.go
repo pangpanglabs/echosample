@@ -6,8 +6,8 @@ import (
 	"net/http/httptest"
 	"offer/filters"
 	"offer/models"
-	"os"
 	"pangpanglabs/goutils/test"
+	"runtime"
 	"strings"
 	"testing"
 
@@ -22,11 +22,12 @@ var (
 )
 
 func init() {
-	os.Remove("test.db")
-	xormEngine, err := xorm.NewEngine("sqlite3", "test.db")
+	runtime.GOMAXPROCS(1)
+	xormEngine, err := xorm.NewEngine("sqlite3", ":memory:")
 	if err != nil {
 		panic(err)
 	}
+	xormEngine.ShowSQL(true)
 	xormEngine.Sync(new(models.Discount))
 	echoApp = echo.New()
 	echoApp.Validator = &filters.Validator{}
@@ -50,6 +51,22 @@ func Test_DiscountApiController_Create(t *testing.T) {
 	test.Ok(t, json.Unmarshal(rec.Body.Bytes(), &v))
 	test.Equals(t, v.Result.Name, "discount name")
 	test.Equals(t, v.Result.StartAt.Format("2006-01-02"), "2017-01-01")
+}
+
+func Test_DiscountApiController_Create2(t *testing.T) {
+	req := httptest.NewRequest(echo.POST, "/api/discounts", strings.NewReader(`{"name":"discount name#2", "desc":"discount desc#2", "startAt":"2017-02-01","endAt":"2017-11-30","actionType":"Percentage","discountAmount":20,"enable":true}`))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	test.Ok(t, handleWithFilter(DiscountApiController{}.Create, echoApp.NewContext(req, rec)))
+	test.Equals(t, http.StatusOK, rec.Code)
+
+	var v struct {
+		Result  models.Discount `json:"result"`
+		Success bool            `json:"success"`
+	}
+	test.Ok(t, json.Unmarshal(rec.Body.Bytes(), &v))
+	test.Equals(t, v.Result.Name, "discount name#2")
+	test.Equals(t, v.Result.StartAt.Format("2006-01-02"), "2017-02-01")
 }
 
 func Test_DiscountApiController_Update(t *testing.T) {
@@ -91,11 +108,12 @@ func Test_DiscountApiController_GetOne(t *testing.T) {
 	test.Equals(t, v.Result.StartAt.Format("2006-01-02"), "2017-01-02")
 }
 
-func Test_DiscountApiController_GetAll(t *testing.T) {
-	req := httptest.NewRequest(echo.GET, "/api/discounts", nil)
+func Test_DiscountApiController_GetAll_SortByAsc(t *testing.T) {
+	req := httptest.NewRequest(echo.GET, "/api/discounts?sortby=discount_amount&order=asc", nil)
 	rec := httptest.NewRecorder()
 	c := echoApp.NewContext(req, rec)
 	test.Ok(t, handleWithFilter(DiscountApiController{}.GetAll, c))
+	// fmt.Println(rec.Body.String())
 	test.Equals(t, http.StatusOK, rec.Code)
 
 	var v struct {
@@ -106,6 +124,26 @@ func Test_DiscountApiController_GetAll(t *testing.T) {
 		Success bool `json:"success"`
 	}
 	test.Ok(t, json.Unmarshal(rec.Body.Bytes(), &v))
-	test.Equals(t, v.Result.TotalCount, 1)
-	test.Equals(t, v.Result.Items[0].StartAt.Format("2006-01-02"), "2017-01-02")
+	test.Equals(t, v.Result.TotalCount, 2)
+	test.Equals(t, v.Result.Items[0].DiscountAmount, float64(10))
+}
+
+func Test_DiscountApiController_GetAll_SortByDesc(t *testing.T) {
+	req := httptest.NewRequest(echo.GET, "/api/discounts?sortby=discount_amount&order=desc", nil)
+	rec := httptest.NewRecorder()
+	c := echoApp.NewContext(req, rec)
+	test.Ok(t, handleWithFilter(DiscountApiController{}.GetAll, c))
+	// fmt.Println(rec.Body.String())
+	test.Equals(t, http.StatusOK, rec.Code)
+
+	var v struct {
+		Result struct {
+			TotalCount int
+			Items      []models.Discount
+		} `json:"result"`
+		Success bool `json:"success"`
+	}
+	test.Ok(t, json.Unmarshal(rec.Body.Bytes(), &v))
+	test.Equals(t, v.Result.TotalCount, 2)
+	test.Equals(t, v.Result.Items[0].DiscountAmount, float64(20))
 }

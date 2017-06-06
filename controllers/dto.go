@@ -10,8 +10,10 @@ const (
 )
 
 type SearchInput struct {
-	SkipCount      int `query:"skipCount"`
-	MaxResultCount int `query:"maxResultCount"`
+	Sortby         []string `query:"sortby"`
+	Order          []string `query:"order"`
+	SkipCount      int      `query:"skipCount"`
+	MaxResultCount int      `query:"maxResultCount"`
 }
 type DiscountInput struct {
 	Name           string  `json:"name" valid:"required"`

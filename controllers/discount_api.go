@@ -24,7 +24,7 @@ func (DiscountApiController) GetAll(c echo.Context) error {
 			Error: ApiError{Message: err.Error()},
 		})
 	}
-	totalCount, items, err := c.Get("DB").(*models.DB).GetAllDiscount(nil, nil, nil, v.SkipCount, v.MaxResultCount)
+	totalCount, items, err := c.Get("DB").(*models.DB).GetAllDiscount(nil, v.Sortby, v.Order, v.SkipCount, v.MaxResultCount)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, ApiResult{
 			Error: ApiError{Message: err.Error()},
