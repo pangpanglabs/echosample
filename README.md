@@ -38,7 +38,7 @@ $ go get github.com/sirupsen/logrus
 
 - web framework: [echo framework](https://echo.labstack.com/)
 - orm tool: [xorm](http://xorm.io/)
-- logger : [logrus](github.com/sirupsen/logrus)
+- logger : [logrus](https://github.com/sirupsen/logrus)
 - configuration tool: [viper](https://github.com/spf13/viper)
 - validator: [govalidator](github.com/asaskevich/govalidator)
 - utils: https://github.com/pangpanglabs/goutils
