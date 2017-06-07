@@ -1,13 +1,14 @@
 package controllers
 
 import (
+	"echosample/models"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"echosample/models"
-	"pangpanglabs/goutils/test"
 	"strings"
 	"testing"
+
+	"github.com/pangpanglabs/goutils/test"
 
 	"github.com/labstack/echo"
 )
