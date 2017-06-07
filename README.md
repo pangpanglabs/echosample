@@ -20,6 +20,13 @@ $ go run main.go
 
 Visit http://127.0.0.1:8080/
 
+## Prerequisite
+
+Install packages
+```
+$ go get github.com/pangpanglabs/goutils...
+```
+
 ## References
 
 - web framework: [echo framework](https://echo.labstack.com/)
