@@ -7,8 +7,13 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+const (
+	ContextDBName     = "DB"
+	ContextLoggerName = "logger"
+)
+
 func DB(ctx context.Context) *xorm.Session {
-	v := ctx.Value("DB")
+	v := ctx.Value(ContextDBName)
 	if v == nil {
 		panic("DB is not exist")
 	}
@@ -19,7 +24,7 @@ func DB(ctx context.Context) *xorm.Session {
 }
 
 func Logger(ctx context.Context) *logrus.Entry {
-	v := ctx.Value("logger")
+	v := ctx.Value(ContextLoggerName)
 	if v == nil {
 		return logrus.WithFields(logrus.Fields{})
 	}

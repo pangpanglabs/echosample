@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"offer/factory"
 
 	"github.com/go-xorm/xorm"
 	"github.com/labstack/echo"
@@ -16,7 +17,7 @@ func SetDbContext(db *xorm.Engine) echo.MiddlewareFunc {
 			defer session.Close()
 
 			req := c.Request()
-			c.SetRequest(req.WithContext(context.WithValue(req.Context(), "DB", session)))
+			c.SetRequest(req.WithContext(context.WithValue(req.Context(), factory.ContextDBName, session)))
 
 			switch req.Method {
 			case "POST", "PUT", "DELETE":

@@ -6,6 +6,8 @@ import (
 	"log"
 	"runtime"
 
+	"offer/factory"
+
 	"github.com/labstack/echo"
 	"github.com/sirupsen/logrus"
 )
@@ -38,7 +40,7 @@ func SetLogger(env string) echo.MiddlewareFunc {
 			}
 
 			req := c.Request()
-			c.SetRequest(req.WithContext(context.WithValue(req.Context(), "logger", logEntry)))
+			c.SetRequest(req.WithContext(context.WithValue(req.Context(), factory.ContextLoggerName, logEntry)))
 
 			return next(c)
 		}
