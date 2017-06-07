@@ -9,8 +9,7 @@ $ go get github.com/pangpanglabs/echosample
 
 Test
 ```
-$ go test github.com/pangpanglabs/echosample/controllers
-$ go test github.com/pangpanglabs/echosample/models
+$ go test github.com/pangpanglabs/echosample/...
 ```
 
 Run
