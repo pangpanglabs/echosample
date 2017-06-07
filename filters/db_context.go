@@ -4,10 +4,11 @@ import (
 	"context"
 	"log"
 	"net/http"
-	"echosample/factory"
 
 	"github.com/go-xorm/xorm"
 	"github.com/labstack/echo"
+
+	"github.com/pangpanglabs/echosample/factory"
 )
 
 func SetDbContext(db *xorm.Engine) echo.MiddlewareFunc {

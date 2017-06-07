@@ -1,16 +1,16 @@
 package controllers
 
 import (
-	"echosample/models"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
-	"github.com/pangpanglabs/goutils/test"
-
 	"github.com/labstack/echo"
+
+	"github.com/pangpanglabs/echosample/models"
+	"github.com/pangpanglabs/goutils/test"
 )
 
 func Test_DiscountApiController_Create(t *testing.T) {

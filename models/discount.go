@@ -2,10 +2,11 @@ package models
 
 import (
 	"context"
-	"echosample/factory"
 	"time"
 
 	"github.com/go-xorm/xorm"
+
+	"github.com/pangpanglabs/echosample/factory"
 )
 
 type Discount struct {

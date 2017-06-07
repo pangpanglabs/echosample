@@ -2,11 +2,12 @@ package models_test
 
 import (
 	"fmt"
-	"echosample/models"
 	"testing"
 	"time"
 
 	"github.com/pangpanglabs/goutils/test"
+
+	"github.com/pangpanglabs/echosample/models"
 )
 
 func TestDiscountCreate(t *testing.T) {

@@ -1,20 +1,20 @@
 package main
 
 import (
-	"echosample/controllers"
-	"echosample/filters"
-	"echosample/models"
 	"flag"
 	"log"
 	"os"
-
-	"github.com/pangpanglabs/goutils/config"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/pangpanglabs/goutils/config"
+
+	"github.com/pangpanglabs/echosample/controllers"
+	"github.com/pangpanglabs/echosample/filters"
+	"github.com/pangpanglabs/echosample/models"
 )
 
 func main() {

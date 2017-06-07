@@ -6,10 +6,10 @@ import (
 	"log"
 	"runtime"
 
-	"echosample/factory"
-
 	"github.com/labstack/echo"
 	"github.com/sirupsen/logrus"
+
+	"github.com/pangpanglabs/echosample/factory"
 )
 
 func SetLogger(env string) echo.MiddlewareFunc {

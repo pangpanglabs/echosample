@@ -1,13 +1,14 @@
 package controllers
 
 import (
-	"echosample/filters"
-	"echosample/models"
 	"runtime"
 
 	"github.com/go-xorm/xorm"
 	"github.com/labstack/echo"
 	_ "github.com/mattn/go-sqlite3"
+
+	"github.com/pangpanglabs/echosample/filters"
+	"github.com/pangpanglabs/echosample/models"
 )
 
 var (

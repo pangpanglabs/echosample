@@ -2,12 +2,13 @@ package models_test
 
 import (
 	"context"
-	"echosample/factory"
-	"echosample/models"
 	"runtime"
 
 	"github.com/go-xorm/xorm"
 	_ "github.com/mattn/go-sqlite3"
+
+	"github.com/pangpanglabs/echosample/factory"
+	"github.com/pangpanglabs/echosample/models"
 )
 
 var ctx context.Context

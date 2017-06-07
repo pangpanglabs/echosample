@@ -1,8 +1,9 @@
 package controllers
 
 import (
-	"echosample/models"
 	"time"
+
+	"github.com/pangpanglabs/echosample/models"
 )
 
 const (

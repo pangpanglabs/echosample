@@ -3,12 +3,13 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-	"echosample/factory"
-	"echosample/models"
 	"strconv"
 
 	"github.com/labstack/echo"
 	"github.com/sirupsen/logrus"
+
+	"github.com/pangpanglabs/echosample/factory"
+	"github.com/pangpanglabs/echosample/models"
 )
 
 type DiscountController struct {
