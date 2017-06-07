@@ -6,14 +6,15 @@ Git clone
 
 ```
 $ cd $GOPATH/src
-$ git clone http://git.elandsystems.com.cn:3000/pangpangjan/offer.git
+$ git clone https://github.com/pangpanglabs/echosample.git
 ```
 
 Run
 
 ```
-$ cd offer
-$ go test offer/controllers
+$ cd echosample
+$ go test echosample/controllers
+$ go test echosample/models
 $ go run main.go
 ```
 
