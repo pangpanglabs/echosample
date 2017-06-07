@@ -35,7 +35,7 @@ func (Discount) GetById(ctx context.Context, id int64) (*Discount, error) {
 }
 func (Discount) GetAll(ctx context.Context, sortby, order []string, offset, limit int) (totalCount int64, items []Discount, err error) {
 	queryBuilder := func() *xorm.Session {
-		q := factory.DB(ctx).Table("discount")
+		q := factory.DB(ctx)
 		if err := setSortOrder(q, sortby, order); err != nil {
 			factory.Logger(ctx).Error(err)
 		}
