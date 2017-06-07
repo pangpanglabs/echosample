@@ -3,15 +3,17 @@
 ## Getting Started
 
 Get source
-
 ```
 $ go get github.com/pangpanglabs/echosample
+```
+
+Test
+```
 $ go test github.com/pangpanglabs/echosample/controllers
 $ go test github.com/pangpanglabs/echosample/models
 ```
 
 Run
-
 ```
 $ cd $GOPATH/src/github.com/pangpanglabs/echosample
 $ go run main.go
