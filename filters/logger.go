@@ -6,7 +6,7 @@ import (
 	"log"
 	"runtime"
 
-	"offer/factory"
+	"echosample/factory"
 
 	"github.com/labstack/echo"
 	"github.com/sirupsen/logrus"

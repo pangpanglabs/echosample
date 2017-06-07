@@ -1,13 +1,14 @@
 package main
 
 import (
+	"echosample/controllers"
+	"echosample/filters"
+	"echosample/models"
 	"flag"
 	"log"
-	"offer/controllers"
-	"offer/filters"
-	"offer/models"
 	"os"
-	"pangpanglabs/goutils/config"
+
+	"github.com/pangpanglabs/goutils/config"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
@@ -16,11 +17,10 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var (
-	appEnv = flag.String("app-env", os.Getenv("APP_ENV"), "app env")
-)
-
 func main() {
+	appEnv := flag.String("app-env", os.Getenv("APP_ENV"), "app env")
+	flag.Parse()
+
 	var c struct {
 		Database struct{ Driver, Connection string }
 		Debug    bool

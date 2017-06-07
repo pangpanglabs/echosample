@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"offer/models"
+	"echosample/models"
 	"pangpanglabs/goutils/test"
 	"strings"
 	"testing"

@@ -3,8 +3,8 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-	"offer/factory"
-	"offer/models"
+	"echosample/factory"
+	"echosample/models"
 	"strconv"
 
 	"github.com/labstack/echo"

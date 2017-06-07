@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"offer/models"
+	"echosample/models"
 	"time"
 )
 

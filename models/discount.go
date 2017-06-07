@@ -2,7 +2,7 @@ package models
 
 import (
 	"context"
-	"offer/factory"
+	"echosample/factory"
 	"time"
 
 	"github.com/go-xorm/xorm"

@@ -2,5 +2,5 @@ database:
   driver: sqlite3
   connection: pos.db
   showSQL: true
-# debug: true
+debug: true
 httpport: 8080

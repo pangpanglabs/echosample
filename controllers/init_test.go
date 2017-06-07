@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"offer/filters"
-	"offer/models"
+	"echosample/filters"
+	"echosample/models"
 	"runtime"
 
 	"github.com/go-xorm/xorm"

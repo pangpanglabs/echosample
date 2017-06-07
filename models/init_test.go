@@ -2,8 +2,8 @@ package models_test
 
 import (
 	"context"
-	"offer/factory"
-	"offer/models"
+	"echosample/factory"
+	"echosample/models"
 	"runtime"
 
 	"github.com/go-xorm/xorm"

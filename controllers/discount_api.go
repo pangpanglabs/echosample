@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"net/http"
-	"offer/factory"
-	"offer/models"
+	"echosample/factory"
+	"echosample/models"
 	"strconv"
 
 	"github.com/labstack/echo"

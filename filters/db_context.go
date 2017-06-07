@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
-	"offer/factory"
+	"echosample/factory"
 
 	"github.com/go-xorm/xorm"
 	"github.com/labstack/echo"
