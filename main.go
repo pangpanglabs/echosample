@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 	"os"
+	"runtime"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
@@ -35,6 +36,10 @@ func main() {
 		panic(err)
 	}
 	defer xormEngine.Close()
+	if c.Database.Driver == "sqlite3" {
+		// sqlite does not support concurrency
+		runtime.GOMAXPROCS(1)
+	}
 	xormEngine.ShowSQL(c.Debug)
 	xormEngine.Sync(new(models.Discount))
 
