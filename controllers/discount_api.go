@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo"
+	"github.com/opentracing/opentracing-go/log"
 	"github.com/sirupsen/logrus"
 
 	"github.com/pangpanglabs/echosample/factory"
@@ -21,6 +22,9 @@ func (c DiscountApiController) Init(g *echo.Group) {
 	g.PUT("/:id", c.Update)
 }
 func (DiscountApiController) GetAll(c echo.Context) error {
+	tracer := factory.Tracer(c.Request().Context())
+	tracer.LogEvent("Start GetAll")
+
 	var v SearchInput
 	if err := c.Bind(&v); err != nil {
 		return c.JSON(http.StatusBadRequest, ApiResult{
@@ -30,6 +34,11 @@ func (DiscountApiController) GetAll(c echo.Context) error {
 	if v.MaxResultCount == 0 {
 		v.MaxResultCount = DefaultMaxResultCount
 	}
+	tracer.LogFields(
+		log.String("Action", "Bind Request"),
+		log.Int("MaxResultCount", v.MaxResultCount),
+		log.Int("SkipCount", v.SkipCount),
+	)
 
 	factory.Logger(c.Request().Context()).WithFields(logrus.Fields{
 		"sortby":         v.Sortby,
@@ -44,6 +53,10 @@ func (DiscountApiController) GetAll(c echo.Context) error {
 			Error: ApiError{Message: err.Error()},
 		})
 	}
+	tracer.LogFields(
+		log.String("Action", "Bind Request"),
+		log.Int64("TotalCount", totalCount),
+	)
 	return c.JSON(http.StatusOK, ApiResult{
 		Success: true,
 		Result: ArrayResult{

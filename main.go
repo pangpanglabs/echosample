@@ -24,6 +24,12 @@ func main() {
 
 	var c struct {
 		Database struct{ Driver, Connection string }
+		Trace    struct {
+			Zipkin struct {
+				Collector struct{ Url string }
+				Recoder   struct{ HostPort, ServiceName string }
+			}
+		}
 		Debug    bool
 		Httpport string
 	}
@@ -57,6 +63,7 @@ func main() {
 	e.Use(middleware.RequestID())
 	e.Use(filters.SetDbContext(xormEngine))
 	e.Use(filters.SetLogger(*appEnv))
+	e.Use(filters.Tracer(c.Trace.Zipkin.Collector.Url, c.Trace.Zipkin.Recoder.HostPort, c.Trace.Zipkin.Recoder.ServiceName, c.Debug))
 
 	e.Renderer = filters.NewTemplate()
 	e.Validator = &filters.Validator{}

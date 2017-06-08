@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/go-xorm/xorm"
+	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -32,4 +33,11 @@ func Logger(ctx context.Context) *logrus.Entry {
 		return logger
 	}
 	return logrus.WithFields(logrus.Fields{})
+}
+
+func Tracer(ctx context.Context) opentracing.Span {
+	if s := opentracing.SpanFromContext(ctx); s != nil {
+		return s
+	}
+	return opentracing.NoopTracer{}.StartSpan("")
 }
