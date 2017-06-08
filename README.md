@@ -1,5 +1,14 @@
 # echosample
 
+## Port to your project
+
+[gomove](https://github.com/KSubedi/gomove) is very useful for moving go package.
+```
+$ go get -u github.com/ksubedi/gomove
+```
+
+
+
 ## Getting Started
 
 Get source
@@ -19,6 +28,18 @@ $ go run main.go
 ```
 
 Visit http://127.0.0.1:8080/
+
+## Tips
+
+### Live reload utility
+
+[github.com/codegangsta/gin](https://github.com/codegangsta/gin)
+
+```
+$ gin -a 8080  -i --all r
+```
+
+Visit http://127.0.0.1:3000/
 
 ## Prerequisite
 
