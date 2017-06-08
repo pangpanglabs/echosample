@@ -24,8 +24,12 @@ Visit http://127.0.0.1:8080/
 
 ### Live reload utility
 
-[github.com/codegangsta/gin](https://github.com/codegangsta/gin)
+Install
+```
+$ go get github.com/codegangsta/gin
+```
 
+Run
 ```
 $ gin -a 8080  -i --all r
 ```
