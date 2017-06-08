@@ -32,12 +32,6 @@ $ gin -a 8080  -i --all r
 
 Visit http://127.0.0.1:3000/
 
-## Prerequisite
-
-Install packages
-```
-$ go get github.com/pangpanglabs/goutils...
-```
 
 ## References
 
