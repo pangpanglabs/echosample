@@ -26,6 +26,9 @@ func Tracer(zipkinAddr, hostPort, serviceName string, debug bool) echo.Middlewar
 	)
 	if err != nil {
 		logrus.Fatal(err)
+		return func(next echo.HandlerFunc) echo.HandlerFunc {
+			return func(c echo.Context) error { return next(c) }
+		}
 	}
 	logrus.WithFields(logrus.Fields{
 		"tracer": "ZipkinHTTP",
