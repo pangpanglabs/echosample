@@ -1,14 +1,5 @@
 # echosample
 
-## Port to your project
-
-[gomove](https://github.com/KSubedi/gomove) is very useful for moving go package.
-```
-$ go get -u github.com/ksubedi/gomove
-```
-
-
-
 ## Getting Started
 
 Get source
