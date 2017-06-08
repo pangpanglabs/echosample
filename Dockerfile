@@ -8,7 +8,9 @@ RUN go get github.com/labstack/echo \
  && go get github.com/sirupsen/logrus \
  && go get github.com/pangpanglabs/goutils/... \
  && go get github.com/go-sql-driver/mysql \
- && go get github.com/mattn/go-sqlite3
+ && go get github.com/mattn/go-sqlite3 \
+ && go get github.com/opentracing/opentracing-go \
+ && go get github.com/openzipkin/zipkin-go-opentracing
 
 ADD . $GOPATH/src/github.com/pangpanglabs/echosample
 
