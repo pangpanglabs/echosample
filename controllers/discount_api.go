@@ -54,7 +54,7 @@ func (DiscountApiController) GetAll(c echo.Context) error {
 		})
 	}
 	tracer.LogFields(
-		log.String("Action", "Bind Request"),
+		log.String("Action", "Search From DB"),
 		log.Int64("TotalCount", totalCount),
 	)
 	return c.JSON(http.StatusOK, ApiResult{
