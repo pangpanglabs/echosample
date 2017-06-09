@@ -1,14 +1,11 @@
 package controllers
 
 import (
-	"runtime"
-
-	"github.com/go-xorm/xorm"
 	"github.com/labstack/echo"
 	_ "github.com/mattn/go-sqlite3"
 
+	"github.com/pangpanglabs/echosample/config"
 	"github.com/pangpanglabs/echosample/filters"
-	"github.com/pangpanglabs/echosample/models"
 )
 
 var (
@@ -17,16 +14,13 @@ var (
 )
 
 func init() {
-	runtime.GOMAXPROCS(1)
-	xormEngine, err := xorm.NewEngine("sqlite3", ":memory:")
-	if err != nil {
-		panic(err)
-	}
-	xormEngine.Sync(new(models.Discount))
 	echoApp = echo.New()
 	echoApp.Validator = &filters.Validator{}
 
+	logger := filters.SetLogger("test")
+	db := filters.SetDbContext(config.Database{Driver: "sqlite3", Connection: ":memory:"})
+
 	handleWithFilter = func(handlerFunc echo.HandlerFunc, c echo.Context) error {
-		return filters.SetLogger("test")(filters.SetDbContext(xormEngine)(handlerFunc))(c)
+		return logger(db(handlerFunc))(c)
 	}
 }

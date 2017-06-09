@@ -1,7 +1,13 @@
 database:
   driver: sqlite3
   connection: sample.db
-  showSQL: true
+  logger:
+    kafka:
+      brokers:
+        - steamer-01.srvs.cloudkafka.com:9093
+        - steamer-02.srvs.cloudkafka.com:9093
+        - steamer-03.srvs.cloudkafka.com:9093
+      topic: sql
 trace:
   zipkin:
     collector:
