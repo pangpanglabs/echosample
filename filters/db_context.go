@@ -4,6 +4,8 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"offer/models"
+	"runtime"
 
 	"github.com/go-xorm/xorm"
 	"github.com/labstack/echo"
@@ -12,6 +14,13 @@ import (
 )
 
 func SetDbContext(db *xorm.Engine) echo.MiddlewareFunc {
+	if db.Dialect().DriverName() == "sqlite3" {
+		// sqlite does not support concurrency
+		runtime.GOMAXPROCS(1)
+	}
+	db.ShowSQL(true)
+	db.Sync(new(models.Discount))
+
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			session := db.NewSession()
