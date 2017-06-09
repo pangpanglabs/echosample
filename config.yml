@@ -14,6 +14,5 @@ trace:
       url: # endpoint typically looks like: http://zipkinhost:9411/api/v1/spans
     recoder:
       hostPort: 127.0.0.1:8080
-      serviceName: echosample
 debug: true
 httpport: 8080

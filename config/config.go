@@ -10,7 +10,7 @@ type Config struct {
 type Trace struct {
 	Zipkin struct {
 		Collector struct{ Url string }
-		Recoder   struct{ HostPort, ServiceName string }
+		Recoder   struct{ HostPort string }
 	}
 }
 

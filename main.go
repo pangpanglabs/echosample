@@ -39,7 +39,7 @@ func main() {
 	e.Use(middleware.RequestID())
 	e.Use(filters.SetDbContext(c.Database))
 	e.Use(filters.SetLogger(*appEnv))
-	e.Use(filters.Tracer(c.Trace.Zipkin.Collector.Url, c.Trace.Zipkin.Recoder.HostPort, c.Trace.Zipkin.Recoder.ServiceName, c.Debug))
+	e.Use(filters.Tracer(c.Trace))
 
 	e.Renderer = filters.NewTemplate()
 	e.Validator = &filters.Validator{}
