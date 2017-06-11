@@ -18,7 +18,7 @@ import (
 	"github.com/pangpanglabs/goutils/kafka"
 )
 
-func SetDbContext(c config.Database) echo.MiddlewareFunc {
+func DbContext(c config.Database) echo.MiddlewareFunc {
 	db, err := xorm.NewEngine(c.Driver, c.Connection)
 	if err != nil {
 		panic(err)

@@ -37,8 +37,8 @@ func main() {
 	e.Use(middleware.CORS())
 	e.Use(middleware.Logger())
 	e.Use(middleware.RequestID())
-	e.Use(filters.SetDbContext(c.Database))
-	e.Use(filters.SetLogger(*appEnv))
+	e.Use(filters.DbContext(c.Database))
+	e.Use(filters.Logger(*appEnv))
 	e.Use(filters.Tracer(c.Trace))
 
 	e.Renderer = filters.NewTemplate()

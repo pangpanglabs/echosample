@@ -12,7 +12,7 @@ import (
 	"github.com/pangpanglabs/echosample/factory"
 )
 
-func SetLogger(env string) echo.MiddlewareFunc {
+func Logger(env string) echo.MiddlewareFunc {
 	logger := logrus.New()
 	logger.Level = logrus.DebugLevel
 
