@@ -17,8 +17,8 @@ func init() {
 	echoApp = echo.New()
 	echoApp.Validator = &filters.Validator{}
 
-	logger := filters.SetLogger("test")
-	db := filters.SetDbContext(config.Database{Driver: "sqlite3", Connection: ":memory:"})
+	logger := filters.Logger("test")
+	db := filters.DbContext(config.Database{Driver: "sqlite3", Connection: ":memory:"})
 
 	handleWithFilter = func(handlerFunc echo.HandlerFunc, c echo.Context) error {
 		return logger(db(handlerFunc))(c)
