@@ -1,5 +1,7 @@
 # echosample
 
+[![Build Status](https://travis-ci.org/pangpanglabs/echosample.svg?branch=master)](https://travis-ci.org/pangpanglabs/echosample)
+
 ## Getting Started
 
 Get source
