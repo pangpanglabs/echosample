@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 	"net/http"
-	"offer/models"
 	"runtime"
 	"time"
 
@@ -15,6 +14,7 @@ import (
 
 	"github.com/pangpanglabs/echosample/config"
 	"github.com/pangpanglabs/echosample/factory"
+	"github.com/pangpanglabs/echosample/models"
 	"github.com/pangpanglabs/goutils/kafka"
 )
 
