@@ -60,7 +60,7 @@ func DbContext(c config.Database) echo.MiddlewareFunc {
 				}
 				if err := next(c); err != nil {
 					session.Rollback()
-					return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+					return err
 				}
 				if c.Response().Status >= 500 {
 					session.Rollback()
@@ -70,9 +70,7 @@ func DbContext(c config.Database) echo.MiddlewareFunc {
 					return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 				}
 			default:
-				if err := next(c); err != nil {
-					return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-				}
+				return next(c)
 			}
 
 			return nil
