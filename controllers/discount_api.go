@@ -27,9 +27,7 @@ func (DiscountApiController) GetAll(c echo.Context) error {
 
 	var v SearchInput
 	if err := c.Bind(&v); err != nil {
-		return c.JSON(http.StatusBadRequest, ApiResult{
-			Error: ApiError{Message: err.Error()},
-		})
+		return ReturnApiFail(c, http.StatusBadRequest, ApiErrorParameter, err)
 	}
 	if v.MaxResultCount == 0 {
 		v.MaxResultCount = DefaultMaxResultCount
@@ -49,107 +47,71 @@ func (DiscountApiController) GetAll(c echo.Context) error {
 
 	totalCount, items, err := models.Discount{}.GetAll(c.Request().Context(), v.Sortby, v.Order, v.SkipCount, v.MaxResultCount)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, ApiResult{
-			Error: ApiError{Message: err.Error()},
-		})
+		return ReturnApiFail(c, http.StatusInternalServerError, ApiErrorDB, err)
 	}
 	tracer.LogFields(
 		log.String("Action", "Search From DB"),
 		log.Int64("TotalCount", totalCount),
 	)
-	return c.JSON(http.StatusOK, ApiResult{
-		Success: true,
-		Result: ArrayResult{
-			TotalCount: totalCount,
-			Items:      items,
-		},
+	return ReturnApiSucc(c, http.StatusOK, ArrayResult{
+		TotalCount: totalCount,
+		Items:      items,
 	})
 }
 
 func (DiscountApiController) Create(c echo.Context) error {
 	var v DiscountInput
 	if err := c.Bind(&v); err != nil {
-		return c.JSON(http.StatusBadRequest, ApiResult{
-			Error: ApiError{Message: err.Error()},
-		})
+		return ReturnApiFail(c, http.StatusBadRequest, ApiErrorParameter, err)
 	}
 	if err := c.Validate(&v); err != nil {
-		return c.JSON(http.StatusBadRequest, ApiResult{
-			Error: ApiError{Message: err.Error()},
-		})
+		return ReturnApiFail(c, http.StatusBadRequest, ApiErrorParameter, err)
 	}
 	discount, err := v.ToModel()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, ApiResult{
-			Error: ApiError{Message: err.Error()},
-		})
+		return ReturnApiFail(c, http.StatusBadRequest, ApiErrorParameter, err)
 	}
 	if _, err := discount.Create(c.Request().Context()); err != nil {
-		return c.JSON(http.StatusInternalServerError, ApiResult{
-			Error: ApiError{Message: err.Error()},
-		})
+		return ReturnApiFail(c, http.StatusInternalServerError, ApiErrorDB, err)
 	}
-	return c.JSON(http.StatusOK, ApiResult{
-		Success: true,
-		Result:  discount,
-	})
+	return ReturnApiSucc(c, http.StatusOK, discount)
 }
 
 func (DiscountApiController) GetOne(c echo.Context) error {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, ApiResult{
-			Error: ApiError{Message: err.Error()},
-		})
+		return ReturnApiFail(c, http.StatusBadRequest, ApiErrorParameter, err)
 	}
 	v, err := models.Discount{}.GetById(c.Request().Context(), id)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, ApiResult{
-			Error: ApiError{Message: err.Error()},
-		})
+		return ReturnApiFail(c, http.StatusInternalServerError, ApiErrorDB, err)
 	}
 	if v == nil {
-		return c.JSON(http.StatusNotFound, nil)
+		return ReturnApiFail(c, http.StatusNotFound, ApiErrorNotFound, nil)
 	}
-	return c.JSON(http.StatusOK, ApiResult{
-		Success: true,
-		Result:  v,
-	})
+	return ReturnApiSucc(c, http.StatusOK, v)
 }
 
 func (DiscountApiController) Update(c echo.Context) error {
 	var v DiscountInput
 	if err := c.Bind(&v); err != nil {
-		return c.JSON(http.StatusBadRequest, ApiResult{
-			Error: ApiError{Message: err.Error()},
-		})
+		return ReturnApiFail(c, http.StatusBadRequest, ApiErrorParameter, err)
 	}
 	if err := c.Validate(&v); err != nil {
-		return c.JSON(http.StatusBadRequest, ApiResult{
-			Error: ApiError{Message: err.Error()},
-		})
+		return ReturnApiFail(c, http.StatusBadRequest, ApiErrorParameter, err)
 	}
 	discount, err := v.ToModel()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, ApiResult{
-			Error: ApiError{Message: err.Error()},
-		})
+		return ReturnApiFail(c, http.StatusBadRequest, ApiErrorParameter, err)
 	}
 
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, ApiResult{
-			Error: ApiError{Message: err.Error()},
-		})
+		return ReturnApiFail(c, http.StatusBadRequest, ApiErrorParameter, err)
 	}
 	discount.Id = id
 	if err := discount.Update(c.Request().Context()); err != nil {
-		return c.JSON(http.StatusInternalServerError, ApiResult{
-			Error: ApiError{Message: err.Error()},
-		})
+		return ReturnApiFail(c, http.StatusInternalServerError, ApiErrorDB, err)
 	}
-	return c.JSON(http.StatusOK, ApiResult{
-		Success: true,
-		Result:  discount,
-	})
+	return ReturnApiSucc(c, http.StatusOK, discount)
 }
