@@ -1,4 +1,4 @@
-package models_test
+package models
 
 import (
 	"context"
@@ -8,7 +8,6 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/pangpanglabs/echosample/factory"
-	"github.com/pangpanglabs/echosample/models"
 )
 
 var ctx context.Context
@@ -20,6 +19,6 @@ func init() {
 		panic(err)
 	}
 	xormEngine.ShowSQL(true)
-	xormEngine.Sync(new(models.Discount))
+	xormEngine.Sync(new(Discount))
 	ctx = context.WithValue(context.Background(), factory.ContextDBName, xormEngine.NewSession())
 }

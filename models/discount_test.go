@@ -1,4 +1,4 @@
-package models_test
+package models
 
 import (
 	"fmt"
@@ -6,12 +6,10 @@ import (
 	"time"
 
 	"github.com/pangpanglabs/goutils/test"
-
-	"github.com/pangpanglabs/echosample/models"
 )
 
 func TestDiscountCreate(t *testing.T) {
-	d1 := models.Discount{
+	d1 := Discount{
 		Name: "name1",
 		Desc: "desc1",
 	}
@@ -22,7 +20,7 @@ func TestDiscountCreate(t *testing.T) {
 	test.Equals(t, d1.CreatedAt.Format("2006-01-02"), time.Now().Format("2006-01-02"))
 	test.Equals(t, d1.UpdatedAt.Format("2006-01-02"), time.Now().Format("2006-01-02"))
 
-	d2 := models.Discount{
+	d2 := Discount{
 		Name: "name2",
 		Desc: "desc2",
 	}
@@ -35,7 +33,7 @@ func TestDiscountCreate(t *testing.T) {
 }
 
 func TestDiscountGetAndUpdate(t *testing.T) {
-	d, err := models.Discount{}.GetById(ctx, 1)
+	d, err := Discount{}.GetById(ctx, 1)
 	test.Ok(t, err)
 	test.Equals(t, d.Id, int64(1))
 	test.Equals(t, d.Name, "name1")
@@ -50,7 +48,7 @@ func TestDiscountGetAndUpdate(t *testing.T) {
 }
 
 func TestDiscountGetAll(t *testing.T) {
-	totalCount, items, err := models.Discount{}.GetAll(ctx, []string{"name"}, []string{"desc"}, 0, 10)
+	totalCount, items, err := Discount{}.GetAll(ctx, []string{"name"}, []string{"desc"}, 0, 10)
 	test.Ok(t, err)
 	test.Equals(t, totalCount, int64(2))
 	test.Equals(t, items[0].Id, int64(2))
