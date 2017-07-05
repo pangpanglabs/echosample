@@ -47,14 +47,14 @@ func DbContext(c config.Database) echo.MiddlewareFunc {
 
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			session := db.NewSession()
-			defer session.Close()
-
 			req := c.Request()
-			c.SetRequest(req.WithContext(context.WithValue(req.Context(), factory.ContextDBName, session)))
-
 			switch req.Method {
 			case "POST", "PUT", "DELETE":
+				session := db.NewSession()
+				defer session.Close()
+
+				c.SetRequest(req.WithContext(context.WithValue(req.Context(), factory.ContextDBName, session)))
+
 				if err := session.Begin(); err != nil {
 					log.Println(err)
 				}
@@ -70,6 +70,7 @@ func DbContext(c config.Database) echo.MiddlewareFunc {
 					return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 				}
 			default:
+				c.SetRequest(req.WithContext(context.WithValue(req.Context(), factory.ContextDBName, db)))
 				return next(c)
 			}
 
