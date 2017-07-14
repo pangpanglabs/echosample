@@ -6,8 +6,7 @@ import (
 
 	"github.com/go-xorm/xorm"
 	_ "github.com/mattn/go-sqlite3"
-
-	"github.com/pangpanglabs/echosample/factory"
+	"github.com/pangpanglabs/goutils/echomiddleware"
 )
 
 var ctx context.Context
@@ -20,5 +19,5 @@ func init() {
 	}
 	xormEngine.ShowSQL(true)
 	xormEngine.Sync(new(Discount))
-	ctx = context.WithValue(context.Background(), factory.ContextDBName, xormEngine.NewSession())
+	ctx = context.WithValue(context.Background(), echomiddleware.ContextDBName, xormEngine.NewSession())
 }

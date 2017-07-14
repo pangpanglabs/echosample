@@ -2,28 +2,39 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
+	"runtime"
 
+	"github.com/asaskevich/govalidator"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/go-xorm/xorm"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	_ "github.com/mattn/go-sqlite3"
 	configutil "github.com/pangpanglabs/goutils/config"
+	"github.com/pangpanglabs/goutils/echomiddleware"
+	"github.com/pangpanglabs/goutils/echotpl"
 
-	"github.com/pangpanglabs/echosample/config"
 	"github.com/pangpanglabs/echosample/controllers"
-	"github.com/pangpanglabs/echosample/filters"
+	"github.com/pangpanglabs/echosample/models"
 )
 
 func main() {
 	appEnv := flag.String("app-env", os.Getenv("APP_ENV"), "app env")
 	flag.Parse()
 
-	var c config.Config
+	var c Config
 	if err := configutil.Read(*appEnv, &c); err != nil {
 		panic(err)
 	}
+	fmt.Println(c)
+	db, err := initDB(c.Database.Driver, c.Database.Connection)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
 
 	e := echo.New()
 
@@ -37,16 +48,57 @@ func main() {
 	e.Use(middleware.CORS())
 	e.Use(middleware.Logger())
 	e.Use(middleware.RequestID())
-	e.Use(filters.DbContext(c.Database))
-	e.Use(filters.Logger(*appEnv))
-	e.Use(filters.Tracer(c.Trace))
+	e.Use(echomiddleware.ContextLogger())
+	e.Use(echomiddleware.ContextDB(c.Service, db, echomiddleware.KafkaConfig(c.Database.Logger.Kafka)))
+	e.Use(echomiddleware.AccessLogger(c.Service, echomiddleware.KafkaConfig(c.AccessLog.Kafka)))
 
-	e.Renderer = filters.NewTemplate()
-	e.Validator = &filters.Validator{}
+	e.Renderer = echotpl.New()
+	e.Validator = &Validator{}
 	e.Debug = c.Debug
 
-	if err := e.Start(":" + c.Httpport); err != nil {
+	if err := e.Start(":" + c.HttpPort); err != nil {
 		log.Println(err)
 	}
 
+}
+
+func initDB(driver, connection string) (*xorm.Engine, error) {
+	db, err := xorm.NewEngine(driver, connection)
+	if err != nil {
+		return nil, err
+	}
+
+	if driver == "sqlite3" {
+		runtime.GOMAXPROCS(1)
+	}
+
+	db.Sync(new(models.Discount))
+	return db, nil
+}
+
+type Config struct {
+	Database struct {
+		Driver     string
+		Connection string
+		Logger     struct {
+			Kafka echomiddleware.KafkaConfig
+		}
+	}
+	AccessLog struct {
+		Kafka echomiddleware.KafkaConfig
+	}
+	Trace struct {
+		Zipkin echomiddleware.ZipkinConfig
+	}
+
+	Debug    bool
+	Service  string
+	HttpPort string
+}
+
+type Validator struct{}
+
+func (v *Validator) Validate(i interface{}) error {
+	_, err := govalidator.ValidateStruct(i)
+	return err
 }

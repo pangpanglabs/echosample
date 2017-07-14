@@ -5,16 +5,12 @@ import (
 
 	"github.com/go-xorm/xorm"
 	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/pangpanglabs/goutils/echomiddleware"
 	"github.com/sirupsen/logrus"
 )
 
-const (
-	ContextDBName     = "DB"
-	ContextLoggerName = "logger"
-)
-
 func DB(ctx context.Context) *xorm.Session {
-	v := ctx.Value(ContextDBName)
+	v := ctx.Value(echomiddleware.ContextDBName)
 	if v == nil {
 		panic("DB is not exist")
 	}
@@ -28,7 +24,7 @@ func DB(ctx context.Context) *xorm.Session {
 }
 
 func Logger(ctx context.Context) *logrus.Entry {
-	v := ctx.Value(ContextLoggerName)
+	v := ctx.Value(echomiddleware.ContextLoggerName)
 	if v == nil {
 		return logrus.WithFields(logrus.Fields{})
 	}

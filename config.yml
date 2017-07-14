@@ -1,18 +1,25 @@
 database:
   driver: sqlite3
-  connection: sample.db
+  connection: echosample.db
   logger:
     kafka:
       brokers:
         - steamer-01.srvs.cloudkafka.com:9093
         - steamer-02.srvs.cloudkafka.com:9093
         - steamer-03.srvs.cloudkafka.com:9093
-      topic: sql
+      topic: labs
 trace:
   zipkin:
+    addr: 127.0.0.1:8080
+    service: echosample
     collector:
-      url: # endpoint typically looks like: http://zipkinhost:9411/api/v1/spans
-    recoder:
-      hostPort: 127.0.0.1:8080
+      url:  # endpoint typically looks like: http://zipkinhost:9411/api/v1/spans    
+    kafka:
+      brokers:
+        - steamer-01.srvs.cloudkafka.com:9093
+        - steamer-02.srvs.cloudkafka.com:9093
+        - steamer-03.srvs.cloudkafka.com:9093
+      topic: trace
 debug: true
+service: echosample
 httpport: 8080
