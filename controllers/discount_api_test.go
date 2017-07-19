@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/labstack/echo"
 
@@ -63,6 +64,7 @@ func Test_DiscountApiController_Update(t *testing.T) {
 	test.Ok(t, json.Unmarshal(rec.Body.Bytes(), &v))
 	test.Equals(t, v.Result.Name, "discount name2")
 	test.Equals(t, v.Result.StartAt.Format("2006-01-02"), "2017-01-02")
+	test.Equals(t, v.Result.UpdatedAt.Format("2006-01-02"), time.Now().Format("2006-01-02"))
 }
 
 func Test_DiscountApiController_GetOne(t *testing.T) {
