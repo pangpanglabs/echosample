@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -91,6 +92,9 @@ func Test_DiscountApiController_GetAll_SortByAsc(t *testing.T) {
 	rec := httptest.NewRecorder()
 	c := echoApp.NewContext(req, rec)
 	test.Ok(t, handleWithFilter(DiscountApiController{}.GetAll, c))
+	if rec.Code != http.StatusOK {
+		fmt.Println(rec.Body.String())
+	}
 	test.Equals(t, http.StatusOK, rec.Code)
 
 	var v struct {
@@ -110,7 +114,9 @@ func Test_DiscountApiController_GetAll_SortByDesc(t *testing.T) {
 	rec := httptest.NewRecorder()
 	c := echoApp.NewContext(req, rec)
 	test.Ok(t, handleWithFilter(DiscountApiController{}.GetAll, c))
-	// fmt.Println(rec.Body.String())
+	if rec.Code != http.StatusOK {
+		fmt.Println(rec.Body.String())
+	}
 	test.Equals(t, http.StatusOK, rec.Code)
 
 	var v struct {
