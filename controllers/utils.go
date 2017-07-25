@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/labstack/echo"
+	"github.com/pangpanglabs/echosample/factory"
 )
 
 const (
@@ -68,6 +69,14 @@ func ReturnApiFail(c echo.Context, status int, apiError ApiError, err error, v .
 }
 
 func ReturnApiSucc(c echo.Context, status int, result interface{}) error {
+	req := c.Request()
+	if req.Method == "POST" || req.Method == "PUT" || req.Method == "DELETE" {
+		err := factory.DB(req.Context()).Commit()
+		if err != nil {
+			return ReturnApiFail(c, http.StatusInternalServerError, ApiErrorDB, err)
+		}
+	}
+
 	return c.JSON(status, ApiResult{
 		Success: true,
 		Result:  result,
