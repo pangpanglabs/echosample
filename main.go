@@ -46,11 +46,11 @@ func main() {
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
-	e.Use(middleware.Logger())
+	// e.Use(middleware.Logger())
 	e.Use(middleware.RequestID())
 	e.Use(echomiddleware.ContextLogger())
 	e.Use(echomiddleware.ContextDB(c.Service, db, echomiddleware.KafkaConfig(c.Database.Logger.Kafka)))
-	e.Use(echomiddleware.AccessLogger(c.Service, echomiddleware.KafkaConfig(c.AccessLog.Kafka)))
+	e.Use(echomiddleware.BehaviorLogger(c.Service, echomiddleware.KafkaConfig(c.BehaviorLog.Kafka)))
 
 	e.Renderer = echotpl.New()
 	e.Validator = &Validator{}
@@ -84,7 +84,7 @@ type Config struct {
 			Kafka echomiddleware.KafkaConfig
 		}
 	}
-	AccessLog struct {
+	BehaviorLog struct {
 		Kafka echomiddleware.KafkaConfig
 	}
 	Trace struct {

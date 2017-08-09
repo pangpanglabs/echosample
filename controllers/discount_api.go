@@ -4,12 +4,11 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/labstack/echo"
-	"github.com/opentracing/opentracing-go/log"
-	"github.com/sirupsen/logrus"
-
 	"github.com/pangpanglabs/echosample/factory"
 	"github.com/pangpanglabs/echosample/models"
+
+	"github.com/labstack/echo"
+	"github.com/sirupsen/logrus"
 )
 
 type DiscountApiController struct {
@@ -22,9 +21,6 @@ func (c DiscountApiController) Init(g *echo.Group) {
 	g.PUT("/:id", c.Update)
 }
 func (DiscountApiController) GetAll(c echo.Context) error {
-	tracer := factory.Tracer(c.Request().Context())
-	tracer.LogEvent("Start GetAll")
-
 	var v SearchInput
 	if err := c.Bind(&v); err != nil {
 		return ReturnApiFail(c, http.StatusBadRequest, ApiErrorParameter, err)
@@ -32,27 +28,29 @@ func (DiscountApiController) GetAll(c echo.Context) error {
 	if v.MaxResultCount == 0 {
 		v.MaxResultCount = DefaultMaxResultCount
 	}
-	tracer.LogFields(
-		log.String("Action", "Bind Request"),
-		log.Int("MaxResultCount", v.MaxResultCount),
-		log.Int("SkipCount", v.SkipCount),
-	)
+
+	factory.BehaviorLogger(c.Request().Context()).WithBizAttr("maxResultCount", v.MaxResultCount).Log("SearchDiscount")
 
 	factory.Logger(c.Request().Context()).WithFields(logrus.Fields{
 		"sortby":         v.Sortby,
 		"order":          v.Order,
 		"maxResultCount": v.MaxResultCount,
 		"skipCount":      v.SkipCount,
-	}).Info("SearchInput")
+	}).Info("SearchStart")
 
 	totalCount, items, err := models.Discount{}.GetAll(c.Request().Context(), v.Sortby, v.Order, v.SkipCount, v.MaxResultCount)
 	if err != nil {
 		return ReturnApiFail(c, http.StatusInternalServerError, ApiErrorDB, err)
 	}
-	tracer.LogFields(
-		log.String("Action", "Search From DB"),
-		log.Int64("TotalCount", totalCount),
-	)
+
+	factory.BehaviorLogger(c.Request().Context()).
+		WithRequestInfo(http.MethodGet, "", nil, 200).
+		WithBizAttrs(map[string]interface{}{
+			"totalCount": totalCount,
+			"itemCount":  len(items),
+		}).
+		Log("SearchComplete")
+
 	return ReturnApiSucc(c, http.StatusOK, ArrayResult{
 		TotalCount: totalCount,
 		Items:      items,

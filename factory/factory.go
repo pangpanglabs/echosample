@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/go-xorm/xorm"
-	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pangpanglabs/goutils/echomiddleware"
 	"github.com/sirupsen/logrus"
 )
@@ -23,6 +22,14 @@ func DB(ctx context.Context) *xorm.Session {
 	panic("DB is not exist")
 }
 
+func BehaviorLogger(ctx context.Context) *echomiddleware.BehaviorLogContext {
+	v := ctx.Value(echomiddleware.BehaviorLoggerName)
+	if logger, ok := v.(*echomiddleware.BehaviorLogContext); ok {
+		return logger
+	}
+	return echomiddleware.NewNopLogger()
+}
+
 func Logger(ctx context.Context) *logrus.Entry {
 	v := ctx.Value(echomiddleware.ContextLoggerName)
 	if v == nil {
@@ -32,11 +39,4 @@ func Logger(ctx context.Context) *logrus.Entry {
 		return logger
 	}
 	return logrus.WithFields(logrus.Fields{})
-}
-
-func Tracer(ctx context.Context) opentracing.Span {
-	if s := opentracing.SpanFromContext(ctx); s != nil {
-		return s
-	}
-	return opentracing.NoopTracer{}.StartSpan("")
 }
