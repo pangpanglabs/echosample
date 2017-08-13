@@ -44,7 +44,7 @@ func (DiscountApiController) GetAll(c echo.Context) error {
 	}
 
 	factory.BehaviorLogger(c.Request().Context()).
-		WithRequestInfo(http.MethodGet, "", nil, 200).
+		WithCallURLInfo(http.MethodGet, "https://play.google.com/books", nil, 200).
 		WithBizAttrs(map[string]interface{}{
 			"totalCount": totalCount,
 			"itemCount":  len(items),

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/go-xorm/xorm"
+	"github.com/pangpanglabs/goutils/behaviorlog"
 	"github.com/pangpanglabs/goutils/echomiddleware"
 	"github.com/sirupsen/logrus"
 )
@@ -22,12 +23,12 @@ func DB(ctx context.Context) *xorm.Session {
 	panic("DB is not exist")
 }
 
-func BehaviorLogger(ctx context.Context) *echomiddleware.BehaviorLogContext {
+func BehaviorLogger(ctx context.Context) *behaviorlog.LogContext {
 	v := ctx.Value(echomiddleware.BehaviorLoggerName)
-	if logger, ok := v.(*echomiddleware.BehaviorLogContext); ok {
-		return logger
+	if logger, ok := v.(*behaviorlog.LogContext); ok {
+		return logger.Clone()
 	}
-	return echomiddleware.NewNopLogger()
+	return behaviorlog.NewNopContext()
 }
 
 func Logger(ctx context.Context) *logrus.Entry {
