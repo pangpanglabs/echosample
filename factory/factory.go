@@ -24,7 +24,7 @@ func DB(ctx context.Context) *xorm.Session {
 }
 
 func BehaviorLogger(ctx context.Context) *behaviorlog.LogContext {
-	v := ctx.Value(echomiddleware.BehaviorLoggerName)
+	v := ctx.Value(behaviorlog.LogContextName)
 	if logger, ok := v.(*behaviorlog.LogContext); ok {
 		return logger.Clone()
 	}
