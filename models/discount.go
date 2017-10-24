@@ -4,8 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/go-xorm/xorm"
-
 	"github.com/pangpanglabs/echosample/factory"
 )
 
@@ -35,17 +33,15 @@ func (Discount) GetById(ctx context.Context, id int64) (*Discount, error) {
 	return &v, nil
 }
 func (Discount) GetAll(ctx context.Context, sortby, order []string, offset, limit int) (totalCount int64, items []Discount, err error) {
-	queryBuilder := func() *xorm.Session {
-		q := factory.DB(ctx)
-		if err := setSortOrder(q, sortby, order); err != nil {
-			factory.Logger(ctx).Error(err)
-		}
-		return q
+
+	q := factory.DB(ctx)
+	if err := setSortOrder(q, sortby, order); err != nil {
+		factory.Logger(ctx).Error(err)
 	}
 
 	errc := make(chan error)
 	go func() {
-		v, err := queryBuilder().Count(&Discount{})
+		v, err := CloneQuery(q).Count(&Discount{})
 		if err != nil {
 			errc <- err
 			return
@@ -56,7 +52,7 @@ func (Discount) GetAll(ctx context.Context, sortby, order []string, offset, limi
 	}()
 
 	go func() {
-		if err := queryBuilder().Limit(limit, offset).Find(&items); err != nil {
+		if err := CloneQuery(q).Limit(limit, offset).Find(&items); err != nil {
 			errc <- err
 			return
 		}
