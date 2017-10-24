@@ -40,3 +40,9 @@ func setSortOrder(q *xorm.Session, sortby, order []string) error {
 	}
 	return nil
 }
+
+func CloneQuery(query *xorm.Session) *xorm.Session {
+	var cloneQuery xorm.Session
+	cloneQuery = *query
+	return &cloneQuery
+}
