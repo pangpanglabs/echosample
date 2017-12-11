@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/go-xorm/xorm"
 	"github.com/labstack/echo"
 	"github.com/pangpanglabs/echosample/factory"
 )
@@ -71,9 +72,11 @@ func ReturnApiFail(c echo.Context, status int, apiError ApiError, err error, v .
 func ReturnApiSucc(c echo.Context, status int, result interface{}) error {
 	req := c.Request()
 	if req.Method == "POST" || req.Method == "PUT" || req.Method == "DELETE" {
-		err := factory.DB(req.Context()).Commit()
-		if err != nil {
-			return ReturnApiFail(c, http.StatusInternalServerError, ApiErrorDB, err)
+		if session, ok := factory.DB(req.Context()).(*xorm.Session); ok {
+			err := session.Commit()
+			if err != nil {
+				return ReturnApiFail(c, http.StatusInternalServerError, ApiErrorDB, err)
+			}
 		}
 	}
 

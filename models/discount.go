@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/go-xorm/xorm"
-
 	"github.com/pangpanglabs/echosample/factory"
+
+	"github.com/go-xorm/xorm"
 )
 
 type Discount struct {
@@ -35,7 +35,7 @@ func (Discount) GetById(ctx context.Context, id int64) (*Discount, error) {
 	return &v, nil
 }
 func (Discount) GetAll(ctx context.Context, sortby, order []string, offset, limit int) (totalCount int64, items []Discount, err error) {
-	queryBuilder := func() *xorm.Session {
+	queryBuilder := func() xorm.Interface {
 		q := factory.DB(ctx)
 		if err := setSortOrder(q, sortby, order); err != nil {
 			factory.Logger(ctx).Error(err)

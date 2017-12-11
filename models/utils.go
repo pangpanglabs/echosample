@@ -6,7 +6,7 @@ import (
 	"github.com/go-xorm/xorm"
 )
 
-func setSortOrder(q *xorm.Session, sortby, order []string) error {
+func setSortOrder(q xorm.Interface, sortby, order []string) error {
 	if len(sortby) != 0 {
 		if len(sortby) == len(order) {
 			// 1) for each sort field, there is an associated order
