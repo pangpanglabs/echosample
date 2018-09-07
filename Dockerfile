@@ -11,7 +11,7 @@ RUN go get github.com/labstack/echo \
  && go get github.com/mattn/go-sqlite3 \
  && go get github.com/opentracing/opentracing-go \
  && go get github.com/openzipkin/zipkin-go-opentracing \
- && go get github.com/elvinchan/echoswagger
+ && go get github.com/pangpanglabs/echoswagger
 
 ADD . $GOPATH/src/github.com/pangpanglabs/echosample
 
