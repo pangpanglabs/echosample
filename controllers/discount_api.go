@@ -7,6 +7,7 @@ import (
 	"github.com/pangpanglabs/echosample/factory"
 	"github.com/pangpanglabs/echosample/models"
 
+	"github.com/elvinchan/echoswagger"
 	"github.com/labstack/echo"
 	"github.com/sirupsen/logrus"
 )
@@ -14,11 +15,11 @@ import (
 type DiscountApiController struct {
 }
 
-func (c DiscountApiController) Init(g *echo.Group) {
-	g.GET("", c.GetAll)
-	g.POST("", c.Create)
-	g.GET("/:id", c.GetOne)
-	g.PUT("/:id", c.Update)
+func (c DiscountApiController) Init(g echoswagger.ApiGroup) {
+	g.GET("", c.GetAll).AddParamQueryNested(SearchInput{})
+	g.POST("", c.Create).AddParamBody(DiscountInput{}, "body", "", true)
+	g.GET("/:id", c.GetOne).AddParamPath("", "id", "")
+	g.PUT("/:id", c.Update).AddParamBody(DiscountInput{}, "body", "", true)
 }
 func (DiscountApiController) GetAll(c echo.Context) error {
 	var v SearchInput

@@ -8,6 +8,7 @@ import (
 	"runtime"
 
 	"github.com/asaskevich/govalidator"
+	"github.com/elvinchan/echoswagger"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 	"github.com/labstack/echo"
@@ -38,9 +39,15 @@ func main() {
 
 	e := echo.New()
 
+	r := echoswagger.New(e, "/v1", "doc", &echoswagger.Info{
+		Title:       "Echo Sample",
+		Description: "This is API doc for Echo Sample",
+		Version:     "1.0",
+	})
+
 	controllers.HomeController{}.Init(e.Group("/"))
 	controllers.DiscountController{}.Init(e.Group("/discounts"))
-	controllers.DiscountApiController{}.Init(e.Group("/api/discounts"))
+	controllers.DiscountApiController{}.Init(r.Group("Discount", "/api/discounts"))
 
 	e.Static("/static", "static")
 	e.Pre(middleware.RemoveTrailingSlash())
