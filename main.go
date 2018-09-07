@@ -8,12 +8,12 @@ import (
 	"runtime"
 
 	"github.com/asaskevich/govalidator"
-	"github.com/elvinchan/echoswagger"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/pangpanglabs/echoswagger"
 	configutil "github.com/pangpanglabs/goutils/config"
 	"github.com/pangpanglabs/goutils/echomiddleware"
 	"github.com/pangpanglabs/goutils/echotpl"

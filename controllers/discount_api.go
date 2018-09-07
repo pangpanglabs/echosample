@@ -7,8 +7,8 @@ import (
 	"github.com/pangpanglabs/echosample/factory"
 	"github.com/pangpanglabs/echosample/models"
 
-	"github.com/elvinchan/echoswagger"
 	"github.com/labstack/echo"
+	"github.com/pangpanglabs/echoswagger"
 	"github.com/sirupsen/logrus"
 )
 
