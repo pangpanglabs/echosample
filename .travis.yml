@@ -18,4 +18,6 @@ install:
   - go get github.com/opentracing/opentracing-go
   - go get github.com/openzipkin/zipkin-go-opentracing
   - go get github.com/pangpanglabs/echoswagger
-script: go test github.com/pangpanglabs/echosample/...
+script: go test -coverprofile=coverage.txt -covermode=atomic github.com/pangpanglabs/echosample/...
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
