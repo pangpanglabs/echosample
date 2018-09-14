@@ -1,6 +1,8 @@
 # echosample
 
 [![Build Status](https://travis-ci.org/pangpanglabs/echosample.svg?branch=master)](https://travis-ci.org/pangpanglabs/echosample)
+[![codecov](https://codecov.io/gh/pangpanglabs/echosample/branch/master/graph/badge.svg)](https://codecov.io/gh/pangpanglabs/echosample)
+
 
 ## Getting Started
 
