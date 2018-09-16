@@ -1,3 +1,5 @@
 echosample
 *.db
 tmp
+*.test
+*.exe

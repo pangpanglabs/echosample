@@ -44,8 +44,8 @@ func (Discount) GetAll(ctx context.Context, sortby, order []string, offset, limi
 	}
 
 	errc := make(chan error)
-	go func() {
-		v, err := queryBuilder().Count(&Discount{})
+	go func(session xorm.Interface) {
+		v, err := session.Count(&Discount{})
 		if err != nil {
 			errc <- err
 			return
@@ -53,15 +53,15 @@ func (Discount) GetAll(ctx context.Context, sortby, order []string, offset, limi
 		totalCount = v
 		errc <- nil
 
-	}()
+	}(queryBuilder())
 
-	go func() {
+	go func(session xorm.Interface) {
 		if err := queryBuilder().Limit(limit, offset).Find(&items); err != nil {
 			errc <- err
 			return
 		}
 		errc <- nil
-	}()
+	}(queryBuilder())
 
 	if err := <-errc; err != nil {
 		return 0, nil, err
