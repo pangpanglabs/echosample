@@ -39,7 +39,7 @@ func main() {
 
 	e := echo.New()
 
-	r := echoswagger.New(e, "/v1", "doc", &echoswagger.Info{
+	r := echoswagger.New(e, c.BasePath, "/doc", &echoswagger.Info{
 		Title:       "Echo Sample",
 		Description: "This is API doc for Echo Sample",
 		Version:     "1.0",
@@ -100,6 +100,7 @@ type Config struct {
 
 	Debug    bool
 	Service  string
+	BasePath string
 	HttpPort string
 }
 
