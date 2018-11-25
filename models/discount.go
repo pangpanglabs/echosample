@@ -43,32 +43,26 @@ func (Discount) GetAll(ctx context.Context, sortby, order []string, offset, limi
 		return q
 	}
 
-	errc := make(chan error)
+	errc, totalCountc, discountc := make(chan error), make(chan int64, 1), make(chan []Discount, 1)
 	go func() {
 		v, err := queryBuilder().Count(&Discount{})
-		if err != nil {
-			errc <- err
-			return
-		}
-		totalCount = v
-		errc <- nil
-
+		totalCountc <- v
+		errc <- err
 	}()
 
 	go func() {
-		if err := queryBuilder().Limit(limit, offset).Find(&items); err != nil {
-			errc <- err
-			return
-		}
-		errc <- nil
+		var v []Discount
+		err := queryBuilder().Limit(limit, offset).Find(&v)
+		discountc <- v
+		errc <- err
 	}()
-
-	if err := <-errc; err != nil {
-		return 0, nil, err
+	for i := 0; i < 2; i++ {
+		if err := <-errc; err != nil {
+			return 0, nil, err
+		}
 	}
-	if err := <-errc; err != nil {
-		return 0, nil, err
-	}
+	totalCount = <-totalCountc
+	items = <-discountc
 	return
 }
 func (d *Discount) Update(ctx context.Context) (err error) {
