@@ -51,10 +51,10 @@ func main() {
 
 	e.Static("/static", "static")
 	e.Pre(middleware.RemoveTrailingSlash())
+	e.Pre(echomiddleware.ContextBase())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
 	// e.Use(middleware.Logger())
-	e.Use(middleware.RequestID())
 	e.Use(echomiddleware.ContextLogger())
 	e.Use(echomiddleware.ContextDB(c.Service, db, echomiddleware.KafkaConfig(c.Database.Logger.Kafka)))
 	e.Use(echomiddleware.BehaviorLogger(c.Service, echomiddleware.KafkaConfig(c.BehaviorLog.Kafka)))
