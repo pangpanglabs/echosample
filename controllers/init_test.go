@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"gopkg.in/testfixtures.v2"
 	"runtime"
 
 	"github.com/asaskevich/govalidator"
@@ -24,6 +25,16 @@ func init() {
 		panic(err)
 	}
 	xormEngine.Sync(new(models.Discount))
+
+	fixtures, err := testfixtures.NewFolder(xormEngine.DB().DB, &testfixtures.SQLite{}, "../testdata/db_fixtures")
+	if err != nil {
+		panic(err)
+	}
+	testfixtures.SkipDatabaseNameCheck(true)
+
+	if err := fixtures.Load(); err != nil {
+		panic(err)
+	}
 
 	echoApp = echo.New()
 	echoApp.Validator = &Validator{}
