@@ -5,8 +5,6 @@ import (
 	"time"
 
 	"github.com/pangpanglabs/echosample/factory"
-
-	"github.com/go-xorm/xorm"
 )
 
 type Discount struct {
@@ -34,42 +32,18 @@ func (Discount) GetById(ctx context.Context, id int64) (*Discount, error) {
 	}
 	return &v, nil
 }
-func (Discount) GetAll(ctx context.Context, sortby, order []string, offset, limit int) (totalCount int64, items []Discount, err error) {
-	queryBuilder := func() xorm.Interface {
-		q := factory.DB(ctx)
-		if err := setSortOrder(q, sortby, order); err != nil {
-			factory.Logger(ctx).Error(err)
-		}
-		return q
+func (Discount) GetAll(ctx context.Context, sortby, order []string, offset, limit int) (int64, []Discount, error) {
+	q := factory.DB(ctx)
+	if err := setSortOrder(q, sortby, order); err != nil {
+		factory.Logger(ctx).Error(err)
 	}
 
-	errc := make(chan error)
-	go func() {
-		v, err := queryBuilder().Count(&Discount{})
-		if err != nil {
-			errc <- err
-			return
-		}
-		totalCount = v
-		errc <- nil
-
-	}()
-
-	go func() {
-		if err := queryBuilder().Limit(limit, offset).Find(&items); err != nil {
-			errc <- err
-			return
-		}
-		errc <- nil
-	}()
-
-	if err := <-errc; err != nil {
+	var items []Discount
+	totalCount, err := q.Limit(limit, offset).FindAndCount(&items)
+	if err != nil {
 		return 0, nil, err
 	}
-	if err := <-errc; err != nil {
-		return 0, nil, err
-	}
-	return
+	return totalCount, items, nil
 }
 func (d *Discount) Update(ctx context.Context) (err error) {
 	_, err = factory.DB(ctx).ID(d.Id).Update(d)
