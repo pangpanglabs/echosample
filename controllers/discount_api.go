@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/pangpanglabs/goutils/behaviorlog"
+
 	"github.com/pangpanglabs/echosample/factory"
 	"github.com/pangpanglabs/echosample/models"
 
@@ -30,8 +32,10 @@ func (DiscountApiController) GetAll(c echo.Context) error {
 		v.MaxResultCount = DefaultMaxResultCount
 	}
 
-	factory.BehaviorLogger(c.Request().Context()).WithBizAttr("maxResultCount", v.MaxResultCount).Log("SearchDiscount")
+	// behavior log
+	behaviorlog.FromCtx(c.Request().Context()).WithBizAttr("maxResultCount", v.MaxResultCount).Log("SearchDiscount")
 
+	// console log
 	factory.Logger(c.Request().Context()).WithFields(logrus.Fields{
 		"sortby":         v.Sortby,
 		"order":          v.Order,
@@ -44,7 +48,8 @@ func (DiscountApiController) GetAll(c echo.Context) error {
 		return ReturnApiFail(c, http.StatusInternalServerError, ApiErrorDB, err)
 	}
 
-	factory.BehaviorLogger(c.Request().Context()).
+	// behavior log
+	behaviorlog.FromCtx(c.Request().Context()).
 		WithCallURLInfo(http.MethodGet, "https://play.google.com/books", nil, 200).
 		WithBizAttrs(map[string]interface{}{
 			"totalCount": totalCount,
