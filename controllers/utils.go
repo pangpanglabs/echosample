@@ -9,6 +9,7 @@ import (
 	"github.com/go-xorm/xorm"
 	"github.com/labstack/echo"
 	"github.com/pangpanglabs/echosample/factory"
+	"github.com/pangpanglabs/goutils/behaviorlog"
 )
 
 const (
@@ -58,6 +59,7 @@ func ReturnApiFail(c echo.Context, status int, apiError ApiError, err error, v .
 	str := ""
 	if err != nil {
 		str = err.Error()
+		behaviorlog.FromCtx(c.Request().Context()).WithError(err)
 	}
 	return c.JSON(status, ApiResult{
 		Success: false,
