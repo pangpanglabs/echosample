@@ -20,13 +20,14 @@ type DiscountApiController struct {
 func (c DiscountApiController) Init(g echoswagger.ApiGroup) {
 	g.GET("", c.GetAll).AddParamQueryNested(SearchInput{})
 	g.POST("", c.Create).AddParamBody(DiscountInput{}, "body", "", true)
-	g.GET("/:id", c.GetOne).AddParamPath("", "id", "")
-	g.PUT("/:id", c.Update).AddParamBody(DiscountInput{}, "body", "", true)
+	g.GET("/:id", c.GetOne).AddParamPath(0, "id", "")
+	g.PUT("/:id", c.Update).AddParamPath(0, "id", "").AddParamBody(DiscountInput{}, "body", "", true)
 }
+
 func (DiscountApiController) GetAll(c echo.Context) error {
 	var v SearchInput
 	if err := c.Bind(&v); err != nil {
-		return ReturnApiFail(c, http.StatusBadRequest, ApiErrorParameter, err)
+		return renderFail(c, factory.ErrorParameter.New(err))
 	}
 	if v.MaxResultCount == 0 {
 		v.MaxResultCount = DefaultMaxResultCount
@@ -45,7 +46,7 @@ func (DiscountApiController) GetAll(c echo.Context) error {
 
 	totalCount, items, err := models.Discount{}.GetAll(c.Request().Context(), v.Sortby, v.Order, v.SkipCount, v.MaxResultCount)
 	if err != nil {
-		return ReturnApiFail(c, http.StatusInternalServerError, ApiErrorDB, err)
+		return renderFail(c, err)
 	}
 
 	// behavior log
@@ -57,7 +58,7 @@ func (DiscountApiController) GetAll(c echo.Context) error {
 		}).
 		Log("SearchComplete")
 
-	return ReturnApiSucc(c, http.StatusOK, ArrayResult{
+	return renderSucc(c, http.StatusOK, ArrayResult{
 		TotalCount: totalCount,
 		Items:      items,
 	})
@@ -66,56 +67,56 @@ func (DiscountApiController) GetAll(c echo.Context) error {
 func (DiscountApiController) Create(c echo.Context) error {
 	var v DiscountInput
 	if err := c.Bind(&v); err != nil {
-		return ReturnApiFail(c, http.StatusBadRequest, ApiErrorParameter, err)
+		return renderFail(c, factory.ErrorParameter.New(err))
 	}
 	if err := c.Validate(&v); err != nil {
-		return ReturnApiFail(c, http.StatusBadRequest, ApiErrorParameter, err)
+		return renderFail(c, factory.ErrorParameter.New(err))
 	}
 	discount, err := v.ToModel()
 	if err != nil {
-		return ReturnApiFail(c, http.StatusBadRequest, ApiErrorParameter, err)
+		return renderFail(c, factory.ErrorParameter.New(err))
 	}
 	if _, err := discount.Create(c.Request().Context()); err != nil {
-		return ReturnApiFail(c, http.StatusInternalServerError, ApiErrorDB, err)
+		return renderFail(c, err)
 	}
-	return ReturnApiSucc(c, http.StatusOK, discount)
+	return renderSucc(c, http.StatusOK, discount)
 }
 
 func (DiscountApiController) GetOne(c echo.Context) error {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
-		return ReturnApiFail(c, http.StatusBadRequest, ApiErrorParameter, err)
+		return renderFail(c, factory.ErrorParameter.New(err))
 	}
 	v, err := models.Discount{}.GetById(c.Request().Context(), id)
 	if err != nil {
-		return ReturnApiFail(c, http.StatusInternalServerError, ApiErrorDB, err)
+		return renderFail(c, err)
 	}
 	if v == nil {
-		return ReturnApiFail(c, http.StatusNotFound, ApiErrorNotFound, nil)
+		return renderFail(c, factory.ErrorNotFound.New(nil))
 	}
-	return ReturnApiSucc(c, http.StatusOK, v)
+	return renderSucc(c, http.StatusOK, v)
 }
 
 func (DiscountApiController) Update(c echo.Context) error {
 	var v DiscountInput
 	if err := c.Bind(&v); err != nil {
-		return ReturnApiFail(c, http.StatusBadRequest, ApiErrorParameter, err)
+		return renderFail(c, factory.ErrorParameter.New(err))
 	}
 	if err := c.Validate(&v); err != nil {
-		return ReturnApiFail(c, http.StatusBadRequest, ApiErrorParameter, err)
+		return renderFail(c, factory.ErrorParameter.New(err))
 	}
 	discount, err := v.ToModel()
 	if err != nil {
-		return ReturnApiFail(c, http.StatusBadRequest, ApiErrorParameter, err)
+		return renderFail(c, factory.ErrorParameter.New(err))
 	}
 
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
-		return ReturnApiFail(c, http.StatusBadRequest, ApiErrorParameter, err)
+		return renderFail(c, factory.ErrorParameter.New(err))
 	}
 	discount.Id = id
 	if err := discount.Update(c.Request().Context()); err != nil {
-		return ReturnApiFail(c, http.StatusInternalServerError, ApiErrorDB, err)
+		return renderFail(c, err)
 	}
-	return ReturnApiSucc(c, http.StatusOK, discount)
+	return renderSucc(c, http.StatusOK, v)
 }
