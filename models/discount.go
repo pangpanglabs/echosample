@@ -21,17 +21,23 @@ type Discount struct {
 }
 
 func (d *Discount) Create(ctx context.Context) (int64, error) {
-	return factory.DB(ctx).Insert(d)
+	affected, err := factory.DB(ctx).Insert(d)
+	if err != nil {
+		return 0, factory.ErrorDB.New(err)
+	}
+	return affected, nil
 }
+
 func (Discount) GetById(ctx context.Context, id int64) (*Discount, error) {
 	var v Discount
 	if has, err := factory.DB(ctx).ID(id).Get(&v); err != nil {
-		return nil, err
+		return nil, factory.ErrorDB.New(err)
 	} else if !has {
 		return nil, nil
 	}
 	return &v, nil
 }
+
 func (Discount) GetAll(ctx context.Context, sortby, order []string, offset, limit int) (int64, []Discount, error) {
 	q := factory.DB(ctx)
 	if err := setSortOrder(q, sortby, order); err != nil {
@@ -41,16 +47,33 @@ func (Discount) GetAll(ctx context.Context, sortby, order []string, offset, limi
 	var items []Discount
 	totalCount, err := q.Limit(limit, offset).FindAndCount(&items)
 	if err != nil {
-		return 0, nil, err
+		return 0, nil, factory.ErrorDB.New(err)
 	}
 	return totalCount, items, nil
 }
-func (d *Discount) Update(ctx context.Context) (err error) {
-	_, err = factory.DB(ctx).ID(d.Id).Update(d)
-	return
+
+func (d *Discount) Update(ctx context.Context) error {
+	if origin, err := d.GetById(ctx, d.Id); err != nil {
+		return factory.ErrorDB.New(err)
+	} else if origin == nil {
+		return factory.ErrorDiscountNotExists.New(err, d.Id)
+	}
+
+	if _, err := factory.DB(ctx).ID(d.Id).Update(d); err != nil {
+		return factory.ErrorDB.New(err)
+	}
+	return nil
 }
 
-func (Discount) Delete(ctx context.Context, id int64) (err error) {
-	_, err = factory.DB(ctx).ID(id).Delete(&Discount{})
-	return
+func (Discount) Delete(ctx context.Context, id int64) error {
+	if origin, err := (Discount{}).GetById(ctx, id); err != nil {
+		return factory.ErrorDB.New(err)
+	} else if origin == nil {
+		return factory.ErrorDiscountNotExists.New(err, id)
+	}
+
+	if _, err := factory.DB(ctx).ID(id).Delete(&Discount{}); err != nil {
+		return factory.ErrorDB.New(err)
+	}
+	return nil
 }
