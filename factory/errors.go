@@ -20,6 +20,7 @@ func (t ErrorTemplate) New(err error, v ...interface{}) *Error {
 		Code:    t.Code,
 		Message: fmt.Sprintf(t.Message, v...),
 		err:     err,
+		status:  t.status,
 	}
 	if err != nil {
 		e.Details = fmt.Sprintf("%s: %s", WrapErrorMessage, err.Error())
